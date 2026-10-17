@@ -1474,75 +1474,135 @@ function handleFoodPhotoSelected(event) {
 
 async function analyzeFoodPhotoWithAI() {
   const hint = document.getElementById('ai-photo-hint').value.trim();
-  const apiKey = (appData.settings.geminiApiKey || '').trim();
+  const inputKey = document.getElementById('settings-gemini-key')?.value?.trim() || '';
+  if (inputKey && !appData.settings.geminiApiKey) {
+    appData.settings.geminiApiKey = inputKey;
+    saveAppData();
+  }
+  const apiKey = (appData.settings.geminiApiKey || inputKey || '').trim();
   const btn = document.getElementById('btn-analyze-photo');
+  const errorBox = document.getElementById('ai-error-box');
+  const resultsCard = document.getElementById('ai-analysis-results');
 
-  if (!currentPhotoBase64 && !hint) {
-    showToast('📷 Toma o sube una foto de tu plato (o describe tu comida) primero.', '#f59e0b');
+  if (errorBox) {
+    errorBox.style.display = 'none';
+    errorBox.innerHTML = '';
+  }
+
+  if (!currentPhotoBase64) {
+    const msg = 'Primero debes tomar una foto o subir una imagen de tu plato.';
+    if (errorBox) {
+      errorBox.style.display = 'block';
+      errorBox.innerHTML = `<strong>⚠️ Falta la foto:</strong> ${escapeHtml(msg)}`;
+    }
+    showToast(`📷 ${msg}`, '#f59e0b');
     return;
   }
 
-  // Si el usuario configuró su API Key de Google Gemini, analizamos la imagen con Gemini Vision
-  if (apiKey && currentPhotoBase64) {
-    try {
-      btn.disabled = true;
-      btn.textContent = '🔍 Analizando plato con IA Vision...';
-
-      const promptText = `Eres un nutricionista deportivo experto. Analiza la foto de esta comida${hint ? ` (Nota del usuario: "${hint}")` : ''}.
-Identifica cada alimento visible en el plato, estima su peso en gramos y calcula sus calorías (kcal), proteínas (g), carbohidratos (g) y grasas (g).
-Responde ÚNICAMENTE con un objeto JSON válido con este formato exacto, sin markdown adicional:
-{"items":[{"name":"Nombre del alimento en español","grams":150,"kcal":240,"protein":35,"carbs":0,"fat":5}]}`;
-
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{
-              parts: [
-                { text: promptText },
-                { inline_data: { mime_type: 'image/jpeg', data: currentPhotoBase64 } }
-              ]
-            }],
-            generationConfig: { temperature: 0.2 }
-          })
-        }
-      );
-
-      const data = await response.json();
-      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-
-      if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
-        if (parsed.items && parsed.items.length > 0) {
-          aiDetectedItems = parsed.items;
-          aiPortionScale = 1.0;
-          document.getElementById('ai-portion-slider').value = '1.0';
-          renderAIDetectedResults();
-          showToast('✨ ¡Plato analizado con IA exitosamente!');
-          btn.disabled = false;
-          btn.textContent = '✨ Calcular Calorías de la Foto';
-          return;
-        }
-      }
-      throw new Error(data?.error?.message || 'Respuesta no reconocida');
-    } catch (err) {
-      console.warn('Error en llamada Gemini API, usando estimador inteligente local:', err);
-      showToast('⚠️ Usando estimador inteligente local (verifica tu API Key si deseas visión en la nube).', '#f59e0b');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = '✨ Calcular Calorías de la Foto';
+  if (!apiKey) {
+    const msg = 'No has configurado tu Gemini API Key. Ve a la pestaña Ajustes (⚙️), pega tu clave de Google AI Studio y presiona "Guardar API Key".';
+    if (errorBox) {
+      errorBox.style.display = 'block';
+      errorBox.innerHTML = `<strong>🔑 Falta API Key:</strong> ${escapeHtml(msg)}`;
     }
+    showToast('🔑 Configura tu Gemini API Key en Ajustes primero.', '#ef4444');
+    return;
   }
 
-  // Estimador Inteligente Local (interpreta la descripción o arma un desglose editable del plato)
-  aiDetectedItems = estimateMealFromHintOrDefault(hint);
-  aiPortionScale = 1.0;
-  document.getElementById('ai-portion-slider').value = '1.0';
-  renderAIDetectedResults();
-  showToast('🍽️ Desglose estimado listo. Puedes ajustar los gramos o porción antes de guardar.');
+  try {
+    btn.disabled = true;
+    btn.textContent = '🔍 Analizando plato con Gemini 2.5 Flash...';
+    if (resultsCard) resultsCard.style.display = 'none';
+
+    const promptText = `Eres un nutricionista deportivo experto. Analiza la foto de esta comida${hint ? ` (Nota del usuario: "${hint}")` : ''}.
+Identifica cada alimento visible en el plato, estima su peso en gramos y calcula sus calorías (kcal), proteínas (g), carbohidratos (g) y grasas (g).
+Responde ÚNICAMENTE con un objeto JSON válido con este formato exacto, sin texto adicional ni bloques markdown:
+{"items":[{"name":"Nombre del alimento en español","grams":150,"kcal":240,"protein":35,"carbs":0,"fat":5}]}`;
+
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: promptText },
+            { inline_data: { mime_type: 'image/jpeg', data: currentPhotoBase64 } }
+          ]
+        }],
+        generationConfig: {
+          temperature: 0.2
+        }
+      })
+    });
+
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok || data?.error) {
+      const apiErrMsg = data?.error?.message
+        ? `${data.error.message} (Código ${data.error.code || response.status})`
+        : `Error HTTP ${response.status} (${response.statusText || 'Fallo en la petición'})`;
+      throw new Error(apiErrMsg);
+    }
+
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const rawText = parts
+      .filter(p => !p.thought && typeof p.text === 'string')
+      .map(p => p.text)
+      .join('\n') || parts[0]?.text || '';
+
+    if (!rawText) {
+      const blockReason = data?.promptFeedback?.blockReason || data?.candidates?.[0]?.finishReason || 'Respuesta vacía del modelo';
+      throw new Error(`Gemini no devolvió texto (${blockReason}).`);
+    }
+
+    // Quitar bloques markdown ```json y ``` antes de parsear el JSON
+    const cleanText = rawText
+      .replace(/```json\s*/gi, '')
+      .replace(/```\s*/g, '')
+      .trim();
+
+    const jsonObjectMatch = cleanText.match(/\{[\s\S]*\}/);
+    const jsonStringToParse = jsonObjectMatch ? jsonObjectMatch[0] : cleanText;
+
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonStringToParse);
+    } catch (parseErr) {
+      throw new Error(`Error al parsear el JSON devuelto por Gemini: ${parseErr.message}. Respuesta recibida: ${cleanText.slice(0, 180)}`);
+    }
+
+    const itemsArray = Array.isArray(parsed) ? parsed : (parsed.items || parsed.alimentos || []);
+    if (!Array.isArray(itemsArray) || itemsArray.length === 0) {
+      throw new Error('Gemini no identificó alimentos válidos en la imagen.');
+    }
+
+    aiDetectedItems = itemsArray.map(it => ({
+      name: String(it.name || it.nombre || 'Alimento detectado'),
+      grams: Number(it.grams ?? it.gramos) || 100,
+      kcal: Number(it.kcal ?? it.calorias ?? it.calories) || 0,
+      protein: Number(it.protein ?? it.proteina ?? it.proteinas) || 0,
+      carbs: Number(it.carbs ?? it.carbohidratos) || 0,
+      fat: Number(it.fat ?? it.grasas ?? it.grasa) || 0
+    }));
+
+    aiPortionScale = 1.0;
+    document.getElementById('ai-portion-slider').value = '1.0';
+    renderAIDetectedResults();
+    showToast('✨ ¡Plato analizado con Gemini 2.5 Flash exitosamente!');
+  } catch (err) {
+    console.error('Error real en Gemini API:', err);
+    const realMsg = err?.message || String(err);
+    if (errorBox) {
+      errorBox.style.display = 'block';
+      errorBox.innerHTML = `<strong>❌ Error en la API de Gemini (gemini-2.5-flash):</strong><br/>${escapeHtml(realMsg)}`;
+    }
+    showToast(`❌ Error Gemini: ${escapeHtml(realMsg)}`, '#ef4444');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✨ Calcular Calorías de la Foto';
+  }
 }
 
 function estimateMealFromHintOrDefault(hintText) {
