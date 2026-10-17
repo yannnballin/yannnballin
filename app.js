@@ -1519,7 +1519,7 @@ Identifica cada alimento visible en el plato, estima su peso en gramos y calcula
 Responde ÚNICAMENTE con un objeto JSON válido con este formato exacto, sin texto adicional ni bloques markdown:
 {"items":[{"name":"Nombre del alimento en español","grams":150,"kcal":240,"protein":35,"carbs":0,"fat":5}]}`;
 
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -1596,7 +1596,7 @@ Responde ÚNICAMENTE con un objeto JSON válido con este formato exacto, sin tex
     const realMsg = err?.message || String(err);
     if (errorBox) {
       errorBox.style.display = 'block';
-      errorBox.innerHTML = `<strong>❌ Error en la API de Gemini (gemini-2.5-flash):</strong><br/>${escapeHtml(realMsg)}`;
+      errorBox.innerHTML = `<strong>❌ Error en la API de Gemini (gemini-3.8-flash):</strong><br/>${escapeHtml(realMsg)}`;
     }
     showToast(`❌ Error Gemini: ${escapeHtml(realMsg)}`, '#ef4444');
   } finally {
