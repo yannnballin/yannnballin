@@ -3216,17 +3216,81 @@ function renderFoodDatabaseList() {
 async function searchOpenFoodFactsByText(overrideQuery = null) {
   const q = (overrideQuery ?? document.getElementById('food-db-search')?.value ?? '').trim();
   if (!q) {
-    showToast('Escribe el nombre de un producto o marca para buscar en línea.', '#f59e0b');
+    showToast('Escribe el nombre de un alimento o marca para buscar en línea.', '#f59e0b');
     return;
   }
 
   const container = document.getElementById('food-database-results');
   if (container && !overrideQuery) {
-    container.innerHTML = `<div style="text-align:center; padding:16px;">🌐 Buscando "${escapeHtml(q)}" en OpenFoodFacts...</div>`;
+    container.innerHTML = `<div style="text-align:center; padding:16px; color:var(--gold);">🌐 Buscando variedades de "<strong>${escapeHtml(q)}</strong>" en línea...</div>`;
   }
 
+  const apiKey = (appData.settings.geminiApiKey || '').trim();
+  const modelName = appData.settings.geminiModel || 'gemini-3.8-flash';
+  let addedCount = 0;
+
+  // 1. Si tienes tu API Key de Gemini activa, genera 8 variedades exactas al instante
+  if (apiKey) {
+    try {
+      const prompt = `Eres una base de datos nutricional exacta como Fitia y Yazio. El usuario busca el alimento: "${q}".
+Devuelve 8 variedades comunes y distintas de "${q}" (incluyendo opciones naturales, comerciales y de supermercado/panadería, con valores nutricionales reales por cada 100g o porción típica en gramos).
+Responde ÚNICAMENTE con un JSON válido con este formato exacto, sin bloques markdown:
+{"items":[{"name":"Nombre claro en español","brand":"Tipo o Marca","servingG":100,"kcal":250,"protein":9,"carbs":48,"fat":2.5}]}`;
+
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelName)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.2 }
+        })
+      });
+
+      const data = await res.json();
+      const rawText = (data?.candidates?.[0]?.content?.parts || [])
+        .filter(p => !p.thought && typeof p.text === 'string')
+        .map(p => p.text)
+        .join('\n');
+
+      const cleanJson = rawText.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+      const match = cleanJson.match(/\{[\s\S]*\}/);
+      const parsed = JSON.parse(match ? match[0] : cleanJson);
+      const items = parsed.items || [];
+
+      items.forEach(it => {
+        const newItem = {
+          id: 'fd_ai_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+          name: String(it.name || q),
+          brand: String(it.brand || 'IA Nutrición'),
+          servingG: Number(it.servingG) || 100,
+          kcal: Math.round(Number(it.kcal) || 0),
+          protein: Math.round((Number(it.protein) || 0) * 10) / 10,
+          carbs: Math.round((Number(it.carbs) || 0) * 10) / 10,
+          fat: Math.round((Number(it.fat) || 0) * 10) / 10,
+          barcode: ''
+        };
+        if (!appData.foods.some(existing => existing.name.toLowerCase() === newItem.name.toLowerCase())) {
+          appData.foods.unshift(newItem);
+          addedCount++;
+        }
+      });
+
+      if (addedCount > 0) {
+        saveAppData();
+        renderFoodDatabaseList();
+        showToast(`🌐 ¡${addedCount} variedades de "${q}" agregadas a tu repositorio!`);
+        return;
+      }
+    } catch (err) {
+      console.warn('Fallback a OpenFoodFacts:', err);
+    }
+  }
+
+  // 2. Respaldo con API optimizada de OpenFoodFacts (solo pide los campos necesarios para no dar timeout)
   try {
-    const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=12`);
+    const offUrl = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=15&fields=code,product_name,product_name_es,brands,nutriments`;
+    const res = await fetch(offUrl);
     const data = await res.json();
     if (data && data.products && data.products.length > 0) {
       data.products.forEach(p => {
@@ -3245,20 +3309,21 @@ async function searchOpenFoodFactsByText(overrideQuery = null) {
             fat: Math.round((Number(nut.fat_100g) || 0) * 10) / 10,
             barcode: p.code || ''
           };
-          if (!appData.foods.some(existing => existing.name === newItem.name)) {
+          if (!appData.foods.some(existing => existing.name.toLowerCase() === newItem.name.toLowerCase())) {
             appData.foods.unshift(newItem);
+            addedCount++;
           }
         }
       });
       saveAppData();
       renderFoodDatabaseList();
-      showToast('🌐 Productos online agregados a tu repositorio.');
+      showToast(addedCount > 0 ? `🌐 ${addedCount} productos agregados.` : 'Ya tienes estos resultados en tu lista.');
       return;
     }
-    showToast('No se encontraron productos adicionales en línea.', '#f59e0b');
+    showToast('No se encontraron más resultados. Verifica tu API Key en Directiva.', '#f59e0b');
     renderFoodDatabaseList();
   } catch (e) {
-    showToast('Sin conexión al servidor online. Mostrando base local.', '#f59e0b');
+    showToast('Error de red. Verifica que tu API Key de Gemini esté activa en Directiva.', '#ef4444');
     renderFoodDatabaseList();
   }
 }
