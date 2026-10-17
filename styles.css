@@ -1,34 +1,41 @@
 /* ============================================================================
-   TITAN GYM & AI NUTRITION - Mobile-First Dark UI Styles
+   BARÇA FIT • CIUTAT ESPORTIVA PRO - Diseño Oficial Blaugrana & Oro Interactivo
    ============================================================================ */
 
 :root {
-  --bg-base: #090b10;
-  --bg-card: #121620;
-  --bg-card-hover: #191f2e;
-  --bg-elevated: #1e2536;
-  --bg-input: #0d1017;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-focus: #10b981;
+  --barca-blau: #004D98;
+  --barca-blau-light: #1a75d2;
+  --barca-grana: #A50044;
+  --barca-grana-light: #d81b60;
+  --barca-gold: #EDBB00;
+  --barca-red: #DB0030;
 
-  --text-main: #f3f4f6;
-  --text-muted: #9ca3af;
-  --text-dim: #6b7280;
+  --bg-base: #060a17;
+  --bg-card: rgba(12, 20, 44, 0.92);
+  --bg-card-hover: #132046;
+  --bg-elevated: #16244f;
+  --bg-input: #080e24;
+  --border: rgba(237, 187, 0, 0.18);
+  --border-focus: #EDBB00;
 
-  --accent: #10b981;        /* Emerald Neon */
-  --accent-glow: rgba(16, 185, 129, 0.25);
-  --accent-dark: #059669;
-  --primary-blue: #3b82f6;
-  --purple: #8b5cf6;
-  --amber: #f59e0b;
-  --danger: #ef4444;
-  --gold: #fbbf24;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+
+  --accent: #EDBB00;        /* Oro Escudo Barça */
+  --accent-glow: rgba(237, 187, 0, 0.3);
+  --accent-dark: #c59b00;
+  --primary-blue: #004D98;
+  --purple: #A50044;
+  --amber: #EDBB00;
+  --danger: #DB0030;
+  --gold: #EDBB00;
 
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 22px;
-  --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
-  --nav-height: 72px;
+  --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.65);
+  --nav-height: 74px;
 }
 
 * {
@@ -55,76 +62,111 @@ input, textarea, select, button {
   color: inherit;
 }
 
-/* Contenedor Principal estilo Mobile App centrado en PC */
+/* Fondo con textura sutil de franjas Blaugrana del Spotify Camp Nou */
 .app-shell {
   max-width: 540px;
   margin: 0 auto;
   min-height: 100vh;
   padding-bottom: calc(var(--nav-height) + 95px + env(safe-area-inset-bottom, 0px));
   position: relative;
-  background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08), transparent 45%), var(--bg-base);
+  background:
+    radial-gradient(circle at 15% 0%, rgba(165, 0, 68, 0.28), transparent 45%),
+    radial-gradient(circle at 85% 0%, rgba(0, 77, 152, 0.32), transparent 45%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 77, 152, 0.05) 0px,
+      rgba(0, 77, 152, 0.05) 36px,
+      rgba(165, 0, 68, 0.05) 36px,
+      rgba(165, 0, 68, 0.05) 72px
+    ),
+    var(--bg-base);
 }
 
-/* Header Superior */
-.top-header {
+/* Cinta superior Senyera / Blaugrana */
+.app-shell::before {
+  content: '';
+  display: block;
+  height: 5px;
+  width: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--barca-blau) 0px,
+    var(--barca-blau) 35px,
+    var(--barca-grana) 35px,
+    var(--barca-grana) 70px,
+    var(--barca-gold) 70px,
+    var(--barca-gold) 76px
+  );
   position: sticky;
   top: 0;
+  z-index: 55;
+}
+
+/* Header Superior Blaugrana */
+.top-header {
+  position: sticky;
+  top: 5px;
   z-index: 40;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 18px;
-  background: rgba(9, 11, 16, 0.85);
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(0, 42, 92, 0.94), rgba(110, 0, 45, 0.92));
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--barca-gold);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .brand-group {
   display: flex;
   align-items: center;
   gap: 10px;
+  cursor: pointer;
 }
 
 .brand-logo {
-  width: 36px;
-  height: 36px;
-  border-radius: 11px;
-  background: linear-gradient(135deg, var(--accent), #047857);
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
-  font-size: 18px;
-  color: #051b11;
-  box-shadow: 0 0 16px var(--accent-glow);
+  filter: drop-shadow(0 0 8px rgba(237, 187, 0, 0.45));
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.brand-group:active .brand-logo {
+  transform: scale(1.22) rotate(-8deg);
 }
 
 .brand-title h1 {
-  font-size: 17px;
-  font-weight: 800;
+  font-size: 16.5px;
+  font-weight: 900;
   letter-spacing: -0.3px;
   display: flex;
   align-items: center;
   gap: 6px;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
 }
 
 .brand-subtitle {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--barca-gold);
+  font-weight: 600;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 /* Vistas / Pestañas */
 .view-section {
   display: none;
   padding: 16px;
-  animation: fadeIn 0.2s ease-out;
+  animation: fadeIn 0.22s ease-out;
 }
 
 .view-section.active {
@@ -136,14 +178,22 @@ input, textarea, select, button {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Tarjetas */
+/* Tarjetas con estilo Blaugrana & Borde Oro sutil */
 .card {
-  background: var(--bg-card);
+  background: linear-gradient(160deg, rgba(14, 25, 56, 0.95) 0%, rgba(22, 12, 38, 0.95) 100%);
   border: 1px solid var(--border);
+  border-top: 3px solid var(--barca-grana);
   border-radius: var(--radius-md);
   padding: 16px;
   margin-bottom: 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.card:nth-child(even) {
+  border-top-color: var(--barca-blau-light);
 }
 
 .card-header {
@@ -155,22 +205,24 @@ input, textarea, select, button {
 
 .card-title {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 800;
   display: flex;
   align-items: center;
   gap: 8px;
+  color: #fff;
 }
 
 .section-heading {
-  font-size: 18px;
-  font-weight: 800;
-  margin: 6px 0 12px;
+  font-size: 17.5px;
+  font-weight: 900;
+  margin: 8px 0 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  color: var(--barca-gold);
 }
 
-/* Botones */
+/* Botones Interactivos Barça */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -178,53 +230,61 @@ input, textarea, select, button {
   gap: 7px;
   padding: 10px 15px;
   border-radius: var(--radius-sm);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 13.5px;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.16s ease;
   text-decoration: none;
 }
 
 .btn:active {
-  transform: scale(0.97);
+  transform: scale(0.95);
 }
 
+/* Botón Principal: Blaugrana con borde Oro */
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-  color: #04130d;
-  font-weight: 700;
-  box-shadow: 0 4px 14px var(--accent-glow);
+  background: linear-gradient(135deg, var(--barca-grana) 0%, var(--barca-blau) 100%);
+  color: #fff;
+  font-weight: 800;
+  border: 1px solid rgba(237, 187, 0, 0.55);
+  box-shadow: 0 4px 15px rgba(165, 0, 68, 0.4);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 18px rgba(237, 187, 0, 0.45);
 }
 
 .btn-blue {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #004D98, #003366);
   color: #fff;
+  border: 1px solid rgba(237, 187, 0, 0.35);
   font-weight: 700;
 }
 
 .btn-purple {
-  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  background: linear-gradient(135deg, #A50044, #70002e);
   color: #fff;
+  border: 1px solid rgba(237, 187, 0, 0.35);
   font-weight: 700;
 }
 
 .btn-secondary {
   background: var(--bg-elevated);
   color: var(--text-main);
-  border-color: var(--border);
+  border-color: rgba(237, 187, 0, 0.25);
 }
 
 .btn-ghost {
-  background: transparent;
-  color: var(--text-muted);
-  border-color: var(--border);
+  background: rgba(0, 77, 152, 0.15);
+  color: var(--barca-gold);
+  border-color: rgba(237, 187, 0, 0.25);
 }
 
 .btn-danger {
-  background: rgba(239, 68, 68, 0.14);
-  color: #f87171;
-  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(219, 0, 48, 0.2);
+  color: #ff6b81;
+  border-color: rgba(219, 0, 48, 0.45);
 }
 
 .btn-sm {
@@ -237,7 +297,7 @@ input, textarea, select, button {
   width: 100%;
 }
 
-/* Badges / Chips */
+/* Badges / Chips Culés */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -245,25 +305,27 @@ input, textarea, select, button {
   padding: 3px 9px;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   background: var(--bg-elevated);
   color: var(--text-muted);
 }
 
 .badge-accent {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
+  background: linear-gradient(135deg, rgba(165, 0, 68, 0.35), rgba(0, 77, 152, 0.35));
+  color: var(--barca-gold);
+  border: 1px solid rgba(237, 187, 0, 0.4);
 }
 
 .badge-gold {
-  background: rgba(251, 191, 36, 0.18);
-  color: #fbbf24;
-  border: 1px solid rgba(251, 191, 36, 0.35);
+  background: rgba(237, 187, 0, 0.2);
+  color: var(--barca-gold);
+  border: 1px solid rgba(237, 187, 0, 0.5);
 }
 
 .badge-blue {
-  background: rgba(59, 130, 246, 0.16);
+  background: rgba(0, 77, 152, 0.35);
   color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.35);
 }
 
 /* Grid de Estadísticas Rápidas */
@@ -289,13 +351,13 @@ input, textarea, select, button {
 
 .stat-value {
   font-size: 21px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+  font-weight: 900;
+  color: var(--barca-gold);
 }
 
 .stat-sub {
   font-size: 11px;
-  color: var(--accent);
+  color: #60a5fa;
   margin-top: 2px;
 }
 
@@ -329,6 +391,7 @@ input, textarea, select, button {
   font-size: 20px;
   font-weight: 900;
   line-height: 1.05;
+  color: var(--barca-gold);
 }
 
 .kcal-ring-center .small-lbl {
@@ -353,13 +416,13 @@ input, textarea, select, button {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .progress-track {
   width: 100%;
-  height: 7px;
-  background: rgba(255, 255, 255, 0.07);
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 99px;
   overflow: hidden;
 }
@@ -370,24 +433,30 @@ input, textarea, select, button {
   transition: width 0.35s ease;
 }
 
-/* Entrenamiento en Vivo (Live Workout) */
+/* Entrenamiento en Vivo (Partido en el Camp Nou) */
 .live-workout-banner {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.16));
-  border: 1px solid rgba(16, 185, 129, 0.45);
+  background: linear-gradient(135deg, rgba(165, 0, 68, 0.45), rgba(0, 77, 152, 0.45));
+  border: 2px solid var(--barca-gold);
   border-radius: var(--radius-md);
   padding: 12px 14px;
   margin-bottom: 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-shadow: 0 0 20px rgba(237, 187, 0, 0.2);
 }
 
 .workout-exercise-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
+  border-left: 4px solid var(--barca-grana);
   border-radius: var(--radius-md);
   padding: 14px;
   margin-bottom: 14px;
+}
+
+.workout-exercise-card:nth-child(even) {
+  border-left-color: var(--barca-blau-light);
 }
 
 .exercise-head {
@@ -401,7 +470,7 @@ input, textarea, select, button {
 .exercise-name {
   font-size: 15.5px;
   font-weight: 800;
-  color: #fff;
+  color: var(--barca-gold);
 }
 
 .sets-table {
@@ -428,7 +497,7 @@ input, textarea, select, button {
 }
 
 .set-row.completed {
-  background: rgba(16, 185, 129, 0.13);
+  background: linear-gradient(90deg, rgba(0, 77, 152, 0.35), rgba(165, 0, 68, 0.35));
 }
 
 .set-row td {
@@ -448,9 +517,9 @@ input, textarea, select, button {
   cursor: pointer;
 }
 
-.set-type-btn.type-W { color: var(--amber); border-color: rgba(245, 158, 11, 0.4); }
-.set-type-btn.type-D { color: var(--purple); border-color: rgba(139, 92, 246, 0.4); }
-.set-type-btn.type-F { color: var(--danger); border-color: rgba(239, 68, 68, 0.4); }
+.set-type-btn.type-W { color: var(--barca-gold); border-color: var(--barca-gold); }
+.set-type-btn.type-D { color: #ff6b9d; border-color: var(--barca-grana); }
+.set-type-btn.type-F { color: #ff4757; border-color: var(--danger); }
 
 .prev-set-text {
   font-size: 11.5px;
@@ -464,13 +533,13 @@ input, textarea, select, button {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: 7px;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 14px;
 }
 
 .set-input:focus {
   outline: none;
-  border-color: var(--accent);
+  border-color: var(--barca-gold);
 }
 
 .set-check-btn {
@@ -486,12 +555,12 @@ input, textarea, select, button {
 }
 
 .set-row.completed .set-check-btn {
-  background: var(--accent);
-  color: #03150e;
-  border-color: var(--accent);
+  background: var(--barca-gold);
+  color: #060a17;
+  border-color: var(--barca-gold);
 }
 
-/* Temporizador de Descanso Flotante */
+/* Temporizador de Descanso Flotante Blaugrana */
 .rest-timer-bar {
   position: fixed;
   bottom: calc(var(--nav-height) + 8px + env(safe-area-inset-bottom, 0px));
@@ -499,16 +568,16 @@ input, textarea, select, button {
   transform: translateX(-50%);
   width: calc(100% - 24px);
   max-width: 516px;
-  background: rgba(18, 22, 32, 0.96);
+  background: linear-gradient(135deg, rgba(0, 52, 112, 0.97), rgba(130, 0, 53, 0.97));
   backdrop-filter: blur(14px);
-  border: 1px solid rgba(16, 185, 129, 0.5);
+  border: 2px solid var(--barca-gold);
   border-radius: 16px;
   padding: 10px 14px;
   z-index: 60;
   display: none;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75);
 }
 
 .rest-timer-bar.active {
@@ -518,7 +587,7 @@ input, textarea, select, button {
 .rest-countdown {
   font-size: 20px;
   font-weight: 900;
-  color: var(--accent);
+  color: var(--barca-gold);
   font-variant-numeric: tabular-nums;
 }
 
@@ -530,7 +599,7 @@ input, textarea, select, button {
 .form-label {
   display: block;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-muted);
   margin-bottom: 5px;
 }
@@ -547,7 +616,7 @@ input, textarea, select, button {
 }
 
 .form-control:focus {
-  border-color: var(--accent);
+  border-color: var(--barca-gold);
 }
 
 .form-row {
@@ -562,7 +631,7 @@ input, textarea, select, button {
   gap: 8px;
 }
 
-/* Filtros / Píldoras Horizontales */
+/* Píldoras Horizontales Blaugrana */
 .pills-scroll {
   display: flex;
   gap: 8px;
@@ -581,26 +650,28 @@ input, textarea, select, button {
   padding: 7px 13px;
   border-radius: 999px;
   font-size: 12.5px;
-  font-weight: 600;
+  font-weight: 700;
   background: var(--bg-card);
   border: 1px solid var(--border);
   color: var(--text-muted);
   cursor: pointer;
+  transition: all 0.15s;
 }
 
 .pill-btn.active {
-  background: var(--accent);
-  color: #04130d;
-  border-color: var(--accent);
-  font-weight: 700;
+  background: linear-gradient(135deg, var(--barca-grana), var(--barca-blau));
+  color: var(--barca-gold);
+  border-color: var(--barca-gold);
+  font-weight: 800;
+  box-shadow: 0 3px 12px rgba(165, 0, 68, 0.4);
 }
 
 /* Escáner de Código de Barras y Cámara IA */
 .scanner-box {
   width: 100%;
   min-height: 230px;
-  background: #05070a;
-  border: 2px dashed rgba(59, 130, 246, 0.45);
+  background: #040711;
+  border: 2px dashed var(--barca-gold);
   border-radius: var(--radius-md);
   overflow: hidden;
   position: relative;
@@ -617,7 +688,7 @@ input, textarea, select, button {
   border-radius: var(--radius-sm);
   margin-bottom: 10px;
   display: none;
-  border: 1px solid var(--border);
+  border: 2px solid var(--barca-gold);
 }
 
 /* Comidas del Día */
@@ -626,7 +697,7 @@ input, textarea, select, button {
   align-items: center;
   justify-content: space-between;
   padding: 10px 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .meal-item:last-child {
@@ -634,7 +705,7 @@ input, textarea, select, button {
 }
 
 .meal-item-title {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
 }
 
@@ -643,7 +714,7 @@ input, textarea, select, button {
   color: var(--text-muted);
 }
 
-/* Navegación Inferior (Bottom Tab Bar) */
+/* Navegación Inferior Blaugrana */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -653,10 +724,10 @@ input, textarea, select, button {
   max-width: 540px;
   height: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  background: rgba(12, 15, 22, 0.94);
+  background: linear-gradient(90deg, rgba(6, 15, 38, 0.97) 0%, rgba(28, 6, 22, 0.97) 50%, rgba(6, 15, 38, 0.97) 100%);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border-top: 1px solid var(--border);
+  border-top: 2px solid var(--barca-gold);
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   z-index: 50;
@@ -670,11 +741,11 @@ input, textarea, select, button {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  color: var(--text-dim);
+  color: var(--text-muted);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .nav-item svg {
@@ -684,14 +755,15 @@ input, textarea, select, button {
 }
 
 .nav-item.active {
-  color: var(--accent);
+  color: var(--barca-gold);
+  transform: translateY(-2px);
 }
 
 /* Modales */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.78);
+  background: rgba(3, 6, 16, 0.82);
   backdrop-filter: blur(6px);
   z-index: 100;
   display: none;
@@ -707,8 +779,8 @@ input, textarea, select, button {
   width: 100%;
   max-width: 540px;
   max-height: 90vh;
-  background: var(--bg-card);
-  border-top: 1px solid var(--border);
+  background: linear-gradient(165deg, #0b1536 0%, #1c0921 100%);
+  border-top: 3px solid var(--barca-gold);
   border-radius: 22px 22px 0 0;
   padding: 18px;
   overflow-y: auto;
@@ -729,7 +801,8 @@ input, textarea, select, button {
 
 .modal-title {
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 900;
+  color: var(--barca-gold);
 }
 
 /* Visualizador de Discos (Plate Calculator) */
@@ -739,6 +812,7 @@ input, textarea, select, button {
   justify-content: center;
   min-height: 110px;
   background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 16px;
   margin: 12px 0;
@@ -748,7 +822,7 @@ input, textarea, select, button {
 .bar-sleeve {
   height: 12px;
   width: 45px;
-  background: #6b7280;
+  background: var(--barca-gold);
   border-radius: 3px;
 }
 
@@ -765,7 +839,7 @@ input, textarea, select, button {
   padding: 4px 3px;
 }
 
-/* Vasos de Agua */
+/* Vasos de Agua Blaugrana */
 .water-glasses {
   display: flex;
   gap: 8px;
@@ -777,8 +851,8 @@ input, textarea, select, button {
   width: 36px;
   height: 42px;
   border-radius: 6px 6px 12px 12px;
-  border: 2px solid rgba(59, 130, 246, 0.35);
-  background: rgba(59, 130, 246, 0.08);
+  border: 2px solid rgba(0, 77, 152, 0.6);
+  background: rgba(0, 77, 152, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -788,16 +862,17 @@ input, textarea, select, button {
 }
 
 .water-cup.filled {
-  background: linear-gradient(180deg, #60a5fa, #2563eb);
-  border-color: #60a5fa;
+  background: linear-gradient(180deg, var(--barca-blau-light), var(--barca-grana));
+  border-color: var(--barca-gold);
   color: #fff;
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 12px rgba(237, 187, 0, 0.35);
+  transform: scale(1.05);
 }
 
-/* Toast Notification */
+/* Toast Notification Culé */
 .toast-container {
   position: fixed;
-  top: 70px;
+  top: 74px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 200;
@@ -810,13 +885,14 @@ input, textarea, select, button {
 }
 
 .toast {
-  background: rgba(18, 22, 32, 0.96);
-  border-left: 4px solid var(--accent);
+  background: linear-gradient(135deg, rgba(0, 42, 92, 0.98), rgba(115, 0, 48, 0.98));
+  border: 1px solid var(--barca-gold);
+  border-left: 5px solid var(--barca-gold);
   color: #fff;
   padding: 12px 15px;
   border-radius: 12px;
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: 700;
   box-shadow: var(--shadow);
   animation: fadeIn 0.2s ease;
 }
@@ -826,7 +902,145 @@ input, textarea, select, button {
   width: 100%;
   height: 210px;
   background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 10px;
   position: relative;
+}
+
+/* Racha / Streak Badge Culé */
+.streak-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--barca-grana), var(--barca-blau));
+  border: 1.5px solid var(--barca-gold);
+  color: var(--barca-gold);
+  font-weight: 900;
+  font-size: 12.5px;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(237, 187, 0, 0.25);
+}
+
+.habit-check-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 11px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.habit-check-row.done {
+  background: linear-gradient(90deg, rgba(0, 77, 152, 0.3), rgba(165, 0, 68, 0.3));
+  border-color: var(--barca-gold);
+}
+
+/* Editor Interactivo de Ingredientes IA */
+.ai-ing-card {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--barca-gold);
+  border-radius: 12px;
+  padding: 11px;
+  margin-bottom: 9px;
+}
+
+.ai-ing-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ai-ing-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ai-gram-input {
+  width: 72px;
+  padding: 5px 7px;
+  background: var(--bg-elevated);
+  border: 1.5px solid var(--barca-gold);
+  border-radius: 7px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--barca-gold);
+}
+
+/* Suplementos Checklist */
+.supp-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.supp-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.supp-item.taken {
+  background: linear-gradient(90deg, rgba(0, 77, 152, 0.32), rgba(165, 0, 68, 0.32));
+  border-color: var(--barca-gold);
+}
+
+/* Ayuno Intermitente */
+.fasting-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.fasting-ring-box {
+  position: relative;
+  width: 168px;
+  height: 168px;
+  margin: 8px auto 12px;
+}
+
+.fasting-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Confeti Blaugrana Interactivo */
+.blaugrana-confetti {
+  position: fixed;
+  top: -12px;
+  width: 10px;
+  height: 16px;
+  border-radius: 3px;
+  z-index: 999;
+  pointer-events: none;
+  animation: confettiFall 2.2s ease-in forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(540deg); opacity: 0; }
 }

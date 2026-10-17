@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#090b10" />
+  <meta name="theme-color" content="#004D98" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="TITAN Gym" />
-  <title>TITAN Gym & AI Nutrition</title>
+  <meta name="apple-mobile-web-app-title" content="YANBALLIN" />
+  <title>YANBALLIN 🔵🔴 • Més que un Gym</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="styles.css" />
   <!-- Librería ligera para escaneo de códigos de barras con cámara -->
@@ -18,18 +18,53 @@
     <!-- Notificaciones Toast -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- Header Superior -->
+    <!-- Header Superior FC Barcelona -->
     <header class="top-header">
       <div class="brand-group">
-        <div class="brand-logo">T</div>
+        <!-- Escudo Interactivo FC Barcelona (Tócalo para Himno, Confeti Blaugrana y Frase Culé) -->
+        <div class="brand-logo" onclick="triggerBarcaCrestInteraction()" title="¡Toca el escudo de YANBALLIN Barça! 🔵🔴">
+          <svg viewBox="0 0 100 112" width="38" height="42" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10,12 L90,12 L94,48 C94,80 50,104 50,108 C50,104 6,80 6,48 Z" fill="#EDBB00" stroke="#fff3b0" stroke-width="2.5"/>
+            <!-- Cruz de Sant Jordi (Arriba Izquierda) -->
+            <path d="M13,16 L50,16 L50,44 L11,44 Z" fill="#FFFFFF"/>
+            <rect x="28" y="16" width="7" height="28" fill="#DB0030"/>
+            <rect x="11" y="26.5" width="39" height="7" fill="#DB0030"/>
+            <!-- Senyera Catalana (Arriba Derecha) -->
+            <path d="M50,16 L87,16 L89,44 L50,44 Z" fill="#EDBB00"/>
+            <rect x="55" y="16" width="5" height="28" fill="#DB0030"/>
+            <rect x="65" y="16" width="5" height="28" fill="#DB0030"/>
+            <rect x="75" y="16" width="5" height="28" fill="#DB0030"/>
+            <rect x="83" y="16" width="4" height="28" fill="#DB0030"/>
+            <!-- Franja Central FCB -->
+            <rect x="9" y="43" width="82" height="15" fill="#111524"/>
+            <text x="50" y="54.5" text-anchor="middle" fill="#EDBB00" font-size="11.5" font-weight="900" font-family="Arial, sans-serif" letter-spacing="2">FCB</text>
+            <!-- Franjas Blaugranas Inferiores -->
+            <clipPath id="crestBottomClip">
+              <path d="M9,58 L91,58 C90,82 50,102 50,105 C50,102 10,82 9,58 Z"/>
+            </clipPath>
+            <g clip-path="url(#crestBottomClip)">
+              <rect x="8" y="58" width="17" height="50" fill="#004D98"/>
+              <rect x="25" y="58" width="17" height="50" fill="#A50044"/>
+              <rect x="42" y="58" width="16" height="50" fill="#004D98"/>
+              <rect x="58" y="58" width="17" height="50" fill="#A50044"/>
+              <rect x="75" y="58" width="17" height="50" fill="#004D98"/>
+            </g>
+            <!-- Balón de Oro clásico en el centro inferior -->
+            <circle cx="50" cy="80" r="10.5" fill="#EDBB00" stroke="#080d1e" stroke-width="1.8"/>
+            <path d="M43,76 Q50,82 57,76 M43,84 Q50,78 57,84 M50,70 L50,90" stroke="#8a5a00" stroke-width="1.3" fill="none"/>
+          </svg>
+        </div>
         <div class="brand-title">
-          <h1>TITAN <span class="badge badge-accent">PRO</span></h1>
-          <div class="brand-subtitle" id="header-date-label">Cargando fecha...</div>
+          <h1>YANBALLIN <span class="badge badge-gold">🔵🔴</span></h1>
+          <div class="brand-subtitle" id="header-date-label">Més que un Gym • Cargando...</div>
         </div>
       </div>
       <div class="header-actions">
-        <button class="btn btn-secondary btn-sm" onclick="openPlateCalcModal()" title="Calculadora de Discos">
-          💿 Discos
+        <div id="header-streak-pill" class="streak-pill" onclick="openStreakModal()" title="Tu Racha y Rango en La Masia">
+          🔥 <span id="header-streak-count">0</span>d
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="openPlateCalcModal()" title="Calculadora de Discos Blaugrana">
+          ⚽ Discos
         </button>
         <button id="btn-install-pwa" class="btn btn-primary btn-sm" style="display:none;" onclick="installPWA()">
           📲 Instalar
@@ -38,141 +73,177 @@
     </header>
 
     <!-- ====================================================================
-         1. VISTA: INICIO / DASHBOARD DIARIO
+         1. VISTA: INICIO / DASHBOARD DIARIO (ESTILO FITIA + YAZIO + BARÇA)
          ==================================================================== -->
     <section id="view-home" class="view-section active">
       <!-- Banner dinámico si hay un entrenamiento en curso -->
       <div id="home-live-workout-banner" class="live-workout-banner" style="display:none;">
         <div>
-          <div style="font-size:11px; color:#34d399; font-weight:800; text-transform:uppercase;">⚡ Entrenamiento en curso</div>
+          <div style="font-size:11px; color:var(--gold); font-weight:800; text-transform:uppercase;">⚽ Partido / Entreno en curso en el Camp Nou</div>
           <div id="home-live-workout-name" style="font-weight:800; font-size:15px;">Rutina activa</div>
           <div id="home-live-workout-timer" style="font-size:12px; color:var(--text-muted);">00:00</div>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="switchTab('workout')">Continuar ➔</button>
+        <button class="btn btn-primary btn-sm" onclick="switchTab('workout')">Seguir Jugando ➔</button>
       </div>
 
-      <!-- Tarjeta Principal de Calorías y Macros de Hoy -->
+      <!-- Tarjeta Principal de Calorías, Cardio y Macros de Hoy -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">🔥 Nutrición de Hoy</div>
-          <button class="btn btn-ghost btn-sm" onclick="switchTab('nutrition')">Ver Diario ➔</button>
+          <div class="card-title">🔵🔴 Masia Nutrition (Fitia / Yazio)</div>
+          <button class="btn btn-ghost btn-sm" onclick="switchTab('nutrition')">Diario Culé ➔</button>
         </div>
+
         <div class="kcal-hero">
           <div class="kcal-ring-wrap">
             <svg width="112" height="112" viewBox="0 0 112 112">
-              <circle cx="56" cy="56" r="46" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="10" />
-              <circle id="home-kcal-ring" cx="56" cy="56" r="46" fill="none" stroke="#10b981" stroke-width="10"
+              <defs>
+                <linearGradient id="barcaRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#004D98" />
+                  <stop offset="52%" stop-color="#A50044" />
+                  <stop offset="100%" stop-color="#EDBB00" />
+                </linearGradient>
+              </defs>
+              <circle cx="56" cy="56" r="46" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="10" />
+              <circle id="home-kcal-ring" cx="56" cy="56" r="46" fill="none" stroke="url(#barcaRingGrad)" stroke-width="10"
                 stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"
                 transform="rotate(-90 56 56)" style="transition: stroke-dashoffset 0.5s ease;" />
             </svg>
             <div class="kcal-ring-center">
-              <span class="big-num" id="home-kcal-consumed">0</span>
-              <span class="small-lbl">de <span id="home-kcal-goal">2400</span> kcal</span>
+              <span class="big-num" id="home-kcal-remaining" style="color:var(--gold);">2400</span>
+              <span class="small-lbl" id="home-kcal-rem-label">Disponibles</span>
             </div>
           </div>
 
           <div class="macros-bars">
+            <div style="display:flex; justify-content:space-between; font-size:11.5px; background:var(--bg-input); border:1px solid rgba(237,187,0,0.2); padding:6px 9px; border-radius:8px; margin-bottom:2px;">
+              <span>🍽️ Comida: <strong id="home-kcal-consumed">0</strong></span>
+              <span>⚽ Cardio: <strong style="color:var(--gold);" id="home-kcal-burned">+0</strong></span>
+              <span>🎯 Meta: <strong id="home-kcal-goal">2400</strong></span>
+            </div>
+
             <div class="macro-row">
               <div class="macro-row-head">
-                <span style="color:#34d399;">🥩 Proteína</span>
+                <span style="color:#ff4d79;">🔴 Proteína (Grana)</span>
                 <span id="home-macro-p-txt">0 / 160g</span>
               </div>
               <div class="progress-track">
-                <div id="home-macro-p-bar" class="progress-fill" style="width:0%; background:#10b981;"></div>
+                <div id="home-macro-p-bar" class="progress-fill" style="width:0%; background:linear-gradient(90deg, #A50044, #ff2e63);"></div>
               </div>
             </div>
             <div class="macro-row">
               <div class="macro-row-head">
-                <span style="color:#60a5fa;">🍚 Carbos</span>
+                <span style="color:#38bdf8;">🔵 Carbos (Blau)</span>
                 <span id="home-macro-c-txt">0 / 260g</span>
               </div>
               <div class="progress-track">
-                <div id="home-macro-c-bar" class="progress-fill" style="width:0%; background:#3b82f6;"></div>
+                <div id="home-macro-c-bar" class="progress-fill" style="width:0%; background:linear-gradient(90deg, #004D98, #0088ff);"></div>
               </div>
             </div>
             <div class="macro-row">
               <div class="macro-row-head">
-                <span style="color:#fbbf24;">🥑 Grasas</span>
+                <span style="color:#EDBB00;">🟡 Grasas (Oro)</span>
                 <span id="home-macro-f-txt">0 / 70g</span>
               </div>
               <div class="progress-track">
-                <div id="home-macro-f-bar" class="progress-fill" style="width:0%; background:#f59e0b;"></div>
+                <div id="home-macro-f-bar" class="progress-fill" style="width:0%; background:linear-gradient(90deg, #c99700, #EDBB00);"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Botones Rápidos de Escaneo y Registro -->
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+        <!-- Botones Rápidos de Escaneo, Recetas y Cardio -->
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px;">
           <button class="btn btn-purple btn-sm" onclick="openQuickNutritionMode('ai')">
             📸 Foto IA
           </button>
           <button class="btn btn-blue btn-sm" onclick="openQuickNutritionMode('barcode')">
-            🏷️ Escáner
+            🏷️ Código
           </button>
-          <button class="btn btn-secondary btn-sm" onclick="openQuickNutritionMode('search')">
-            ➕ Alimento
+          <button class="btn btn-secondary btn-sm" onclick="openQuickNutritionMode('recipes')">
+            👨‍🍳 Recetas
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="openCardioModal()">
+            ⚽ Cardio
           </button>
         </div>
       </div>
 
-      <!-- Estadísticas Rápidas -->
-      <div class="stats-grid">
-        <div class="stat-box" onclick="switchTab('workout')" style="cursor:pointer;">
-          <div class="stat-label">🏋️ Entrenos Totales</div>
-          <div class="stat-value" id="home-stat-workouts">0</div>
-          <div class="stat-sub" id="home-stat-week">Esta semana: 0</div>
+      <!-- Tarjeta de Racha y Objetivos del Día -->
+      <div class="card">
+        <div class="card-header" style="margin-bottom:8px;">
+          <div class="card-title">🏆 Objetivos de La Masia Hoy</div>
+          <span class="badge badge-gold" id="home-goals-progress-badge">0 / 4 cumplidos</span>
         </div>
-        <div class="stat-box" onclick="switchTab('progress')" style="cursor:pointer;">
-          <div class="stat-label">⚖️ Peso Corporal</div>
-          <div class="stat-value" id="home-stat-weight">-- kg</div>
-          <div class="stat-sub" id="home-stat-prs">🏆 0 PRs registrados</div>
+        <div id="home-daily-habits-list"></div>
+      </div>
+
+      <!-- Ayuno Intermitente (Resumen Rápido en Inicio) -->
+      <div class="card">
+        <div class="card-header" style="margin-bottom:6px;">
+          <div class="card-title">⏳ Ayuno Intermitente Culé</div>
+          <span class="badge badge-accent" id="home-fasting-protocol-badge">16:8</span>
         </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div>
+            <div id="home-fasting-status-text" style="font-weight:800; font-size:15px;">Sin ayuno activo</div>
+            <div id="home-fasting-sub-text" style="font-size:12px; color:var(--text-muted);">Inicia tu ventana de recuperación cuando termines de cenar.</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="openQuickNutritionMode('fasting')">Abrir Reloj ➔</button>
+        </div>
+      </div>
+
+      <!-- Checklist Rápido de Suplementos de Hoy -->
+      <div class="card">
+        <div class="card-header" style="margin-bottom:8px;">
+          <div class="card-title">💊 Suplementos Ciutat Esportiva</div>
+          <button class="btn btn-ghost btn-sm" onclick="openQuickNutritionMode('supplements')">Gestionar ➔</button>
+        </div>
+        <div id="home-supplements-quick-list" class="supp-grid"></div>
       </div>
 
       <!-- Hidratación Diaria -->
       <div class="card">
         <div class="card-header" style="margin-bottom:6px;">
-          <div class="card-title">💧 Hidratación Diaria</div>
+          <div class="card-title">💧 Hidratación Blaugrana</div>
           <span class="badge badge-blue" id="home-water-label">0 / 2500 ml</span>
         </div>
-        <div style="font-size:12px; color:var(--text-muted);">Toca cada vaso (250 ml) para registrar tu agua de hoy:</div>
+        <div style="font-size:12px; color:var(--text-muted);">Toca cada vaso (250 ml) para hidratarte como titular en el Camp Nou:</div>
         <div id="home-water-cups" class="water-glasses"></div>
       </div>
 
       <!-- Inicio Rápido de Rutina -->
       <div class="section-heading">
-        <span>⚡ Entrenar Ahora</span>
-        <button class="btn btn-ghost btn-sm" onclick="switchTab('workout')">Ver todas</button>
+        <span>🏟️ Saltar al Campo (Entrenar Ahora)</span>
+        <button class="btn btn-ghost btn-sm" onclick="switchTab('workout')">Ver tácticas</button>
       </div>
       <div id="home-routines-list"></div>
 
       <!-- Últimos Récords Personales (PRs) -->
       <div class="card" style="margin-top:14px;">
         <div class="card-header">
-          <div class="card-title">🏆 Mis Récords Personales (PRs)</div>
+          <div class="card-title">🏆 Palmarés y Récords (Balones de Oro / PRs)</div>
         </div>
         <div id="home-prs-list"></div>
       </div>
     </section>
 
     <!-- ====================================================================
-         2. VISTA: ENTRENAR (RUTINAS, ENTRENO EN VIVO, EJERCICIOS, HISTORIAL)
+         2. VISTA: ENTRENAR (RUTINAS, ENTRENO EN VIVO, CARDIO, EJERCICIOS, HISTORIAL)
          ==================================================================== -->
     <section id="view-workout" class="view-section">
-      <!-- PANEL DE ENTRENAMIENTO EN VIVO (Se muestra cuando hay sesión activa) -->
+      <!-- PANEL DE ENTRENAMIENTO EN VIVO -->
       <div id="live-workout-container" style="display:none;">
-        <div class="card" style="border-color: var(--accent); background: linear-gradient(180deg, rgba(16,185,129,0.12), var(--bg-card));">
+        <div class="card" style="border-color: var(--gold); background: linear-gradient(135deg, rgba(0,77,152,0.35), rgba(165,0,68,0.35));">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <div>
-              <span class="badge badge-accent">EN VIVO</span>
+              <span class="badge badge-gold">⚽ PARTIDO EN VIVO</span>
               <input id="live-workout-title-input" type="text" class="form-control"
                 style="margin-top:6px; font-weight:800; font-size:16px; background:transparent; border:none; padding:2px 0;"
-                 value="Entrenamiento" />
+                value="Entrenamiento Blaugrana" />
             </div>
             <div style="text-align:right;">
-              <div id="live-workout-clock" style="font-size:22px; font-weight:900; color:var(--accent); font-variant-numeric:tabular-nums;">00:00</div>
-              <div style="font-size:11px; color:var(--text-muted);">Duración</div>
+              <div id="live-workout-clock" style="font-size:22px; font-weight:900; color:var(--gold); font-variant-numeric:tabular-nums;">00:00</div>
+              <div style="font-size:11px; color:var(--text-muted);">Tiempo de Juego</div>
             </div>
           </div>
 
@@ -186,56 +257,78 @@
               <div id="live-workout-sets" style="font-weight:800; font-size:15px;">0</div>
             </div>
             <div>
-              <div style="font-size:11px; color:var(--text-muted);">Nuevos PRs</div>
+              <div style="font-size:11px; color:var(--text-muted);">Trofeos PRs</div>
               <div id="live-workout-prs" style="font-weight:800; font-size:15px; color:var(--gold);">0 🏆</div>
             </div>
           </div>
         </div>
 
-        <!-- Lista de Ejercicios de la Sesión en Vivo -->
         <div id="live-exercises-list"></div>
 
-        <!-- Acciones del Entrenamiento en Vivo -->
         <div style="display:flex; flex-direction:column; gap:10px; margin-top:12px;">
           <button class="btn btn-secondary btn-block" onclick="openAddExerciseToWorkoutModal()">
-            ➕ Agregar Ejercicio a la Sesión
+            ➕ Convocar Ejercicio a la Sesión
           </button>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <button class="btn btn-danger btn-block" onclick="cancelLiveWorkout()">
-              🗑️ Cancelar
+              🟥 Abandonar Partido
             </button>
             <button class="btn btn-primary btn-block" onclick="finishLiveWorkout()">
-              ✅ Terminar y Guardar
+              🏆 Pitazo Final y Guardar
             </button>
           </div>
         </div>
       </div>
 
-      <!-- PANEL DE GESTIÓN DE RUTINAS Y BIBLIOTECA (Se muestra cuando NO hay entreno activo) -->
+      <!-- PANEL DE GESTIÓN DE RUTINAS, CARDIO Y BIBLIOTECA -->
       <div id="workout-hub-container">
         <div class="pills-scroll">
-          <button class="pill-btn active" id="wtab-routines" onclick="switchWorkoutSubtab('routines')">📋 Mis Rutinas</button>
-          <button class="pill-btn" id="wtab-exercises" onclick="switchWorkoutSubtab('exercises')">💪 Ejercicios</button>
-          <button class="pill-btn" id="wtab-history" onclick="switchWorkoutSubtab('history')">🕒 Historial</button>
+          <button class="pill-btn active" id="wtab-routines" onclick="switchWorkoutSubtab('routines')">📋 Tácticas / Rutinas</button>
+          <button class="pill-btn" id="wtab-cardio" onclick="switchWorkoutSubtab('cardio')">⚽ Cardio / Fútbol</button>
+          <button class="pill-btn" id="wtab-exercises" onclick="switchWorkoutSubtab('exercises')">💪 La Masia Ejercicios</button>
+          <button class="pill-btn" id="wtab-history" onclick="switchWorkoutSubtab('history')">🏆 Historial Partidos</button>
         </div>
 
         <!-- Sub-vista: Mis Rutinas -->
         <div id="workout-sub-routines">
-          <button class="btn btn-primary btn-block" style="margin-bottom:14px; padding:13px;" onclick="startLiveWorkout(null)">
-            ⚡ Iniciar Entrenamiento Libre (En Blanco)
-          </button>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:14px;">
+            <button class="btn btn-primary" style="padding:12px;" onclick="startLiveWorkout(null)">
+              🏟️ Entreno Libre Camp Nou
+            </button>
+            <button class="btn btn-blue" style="padding:12px;" onclick="openCardioModal()">
+              ⚽ Registrar Cardio / Fútbol
+            </button>
+          </div>
 
           <div class="section-heading">
-            <span>Rutinas Guardadas</span>
-            <button class="btn btn-secondary btn-sm" onclick="openRoutineModal()">➕ Crear Rutina</button>
+            <span>🔵🔴 Rutinas del Primer Equipo</span>
+            <button class="btn btn-secondary btn-sm" onclick="openRoutineModal()">➕ Nueva Táctica</button>
           </div>
           <div id="routines-full-list"></div>
+        </div>
+
+        <!-- Sub-vista: Cardio y Quema de Calorías -->
+        <div id="workout-sub-cardio" style="display:none;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⚽ Registrar Cardio / Partido Ciutat Esportiva</div>
+              <span class="badge badge-gold">Quema Kcal</span>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+              Registra tus partidos de fútbol, correr, caminadora inclinada, bicicleta o HIIT estilo Hansi Flick. Las calorías quemadas se sumarán automáticamente a tu balance del día como en Fitia y Yazio.
+            </p>
+            <button class="btn btn-primary btn-block" onclick="openCardioModal()">
+              ⚽ Añadir Sesión de Cardio / Fútbol Hoy
+            </button>
+          </div>
+          <div class="section-heading"><span>🔵🔴 Cardio Registrado Hoy</span></div>
+          <div id="workout-cardio-today-list"></div>
         </div>
 
         <!-- Sub-vista: Biblioteca de Ejercicios -->
         <div id="workout-sub-exercises" style="display:none;">
           <div style="display:flex; gap:8px; margin-bottom:10px;">
-            <input type="text" id="exercise-search-input" class="form-control" placeholder="🔍 Buscar ejercicio o equipo..." oninput="renderExerciseLibrary()" />
+            <input type="text" id="exercise-search-input" class="form-control" placeholder="🔍 Buscar ejercicio o equipo en La Masia..." oninput="renderExerciseLibrary()" />
             <button class="btn btn-primary btn-sm" style="white-space:nowrap;" onclick="openNewExerciseModal()">➕ Nuevo</button>
           </div>
           <div class="pills-scroll" id="muscle-filter-pills"></div>
@@ -250,7 +343,7 @@
     </section>
 
     <!-- ====================================================================
-         3. VISTA: NUTRICIÓN, IA POR FOTO Y ESCÁNER DE CÓDIGO DE BARRAS
+         3. VISTA: NUTRICIÓN, IA EDITABLE, RECETAS, AYUNO Y SUPLEMENTOS
          ==================================================================== -->
     <section id="view-nutrition" class="view-section">
       <!-- Barra de Fecha -->
@@ -262,33 +355,35 @@
         </div>
       </div>
 
-      <!-- Resumen Calórico del Día Seleccionado -->
+      <!-- Resumen Calórico del Día Seleccionado (con Cardio descontado como Fitia/Yazio) -->
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <div>
-            <div style="font-size:12px; color:var(--text-muted);">Calorías Consumidas</div>
-            <div style="font-size:24px; font-weight:900;">
+            <div style="font-size:11.5px; color:var(--text-muted);">Consumidas / Meta (+Cardio Barça)</div>
+            <div style="font-size:21px; font-weight:900;">
               <span id="nut-kcal-in">0</span>
-              <span style="font-size:14px; color:var(--text-muted); font-weight:600;">/ <span id="nut-kcal-target">2400</span> kcal</span>
+              <span style="font-size:13px; color:var(--text-muted); font-weight:600;">/ <span id="nut-kcal-target">2400</span> kcal</span>
             </div>
+            <div id="nut-cardio-burned-line" style="font-size:11.5px; color:var(--gold); font-weight:700;">⚽ Cardio hoy: +0 kcal quemadas</div>
           </div>
           <div style="text-align:right;">
             <div style="font-size:12px; color:var(--text-muted);">Restantes</div>
-            <div id="nut-kcal-left" style="font-size:20px; font-weight:800; color:var(--accent);">2400 kcal</div>
+            <div id="nut-kcal-left" style="font-size:20px; font-weight:800; color:var(--gold);">2400 kcal</div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:4px; padding:3px 8px;" onclick="openCardioModal()">⚽ + Cardio</button>
           </div>
         </div>
 
         <div class="form-row" style="grid-template-columns:repeat(3,1fr); text-align:center; gap:8px;">
-          <div style="background:var(--bg-input); padding:8px; border-radius:10px;">
-            <div style="font-size:11px; color:#34d399; font-weight:700;">Proteína</div>
+          <div style="background:var(--bg-input); border:1px solid rgba(165,0,68,0.4); padding:8px; border-radius:10px;">
+            <div style="font-size:11px; color:#ff4d79; font-weight:700;">🔴 Proteína</div>
             <div id="nut-p-val" style="font-weight:800; font-size:14px;">0 / 160g</div>
           </div>
-          <div style="background:var(--bg-input); padding:8px; border-radius:10px;">
-            <div style="font-size:11px; color:#60a5fa; font-weight:700;">Carbos</div>
+          <div style="background:var(--bg-input); border:1px solid rgba(0,77,152,0.5); padding:8px; border-radius:10px;">
+            <div style="font-size:11px; color:#38bdf8; font-weight:700;">🔵 Carbos</div>
             <div id="nut-c-val" style="font-weight:800; font-size:14px;">0 / 260g</div>
           </div>
-          <div style="background:var(--bg-input); padding:8px; border-radius:10px;">
-            <div style="font-size:11px; color:#fbbf24; font-weight:700;">Grasas</div>
+          <div style="background:var(--bg-input); border:1px solid rgba(237,187,0,0.4); padding:8px; border-radius:10px;">
+            <div style="font-size:11px; color:#EDBB00; font-weight:700;">🟡 Grasas</div>
             <div id="nut-f-val" style="font-weight:800; font-size:14px;">0 / 70g</div>
           </div>
         </div>
@@ -296,36 +391,41 @@
 
       <!-- Pestañas de Herramientas de Nutrición -->
       <div class="pills-scroll">
-        <button class="pill-btn active" id="ntab-diary" onclick="switchNutritionSubtab('diary')">🍽️ Diario del Día</button>
-        <button class="pill-btn" id="ntab-ai" onclick="switchNutritionSubtab('ai')">📸 Foto con IA</button>
-        <button class="pill-btn" id="ntab-barcode" onclick="switchNutritionSubtab('barcode')">🏷️ Escáner Código</button>
-        <button class="pill-btn" id="ntab-search" onclick="switchNutritionSubtab('search')">🔍 Base de Alimentos</button>
+        <button class="pill-btn active" id="ntab-diary" onclick="switchNutritionSubtab('diary')">🍽️ Diario Culé</button>
+        <button class="pill-btn" id="ntab-ai" onclick="switchNutritionSubtab('ai')">📸 Foto IA</button>
+        <button class="pill-btn" id="ntab-recipes" onclick="switchNutritionSubtab('recipes')">👨‍🍳 Mis Recetas</button>
+        <button class="pill-btn" id="ntab-fasting" onclick="switchNutritionSubtab('fasting')">⏳ Ayuno</button>
+        <button class="pill-btn" id="ntab-supplements" onclick="switchNutritionSubtab('supplements')">💊 Suplementos</button>
+        <button class="pill-btn" id="ntab-barcode" onclick="switchNutritionSubtab('barcode')">🏷️ Escáner</button>
+        <button class="pill-btn" id="ntab-search" onclick="switchNutritionSubtab('search')">🔍 Alimentos</button>
       </div>
 
-      <!-- SUB-VISTA A: DIARIO DE COMIDAS -->
+      <!-- SUB-VISTA A: DIARIO DE COMIDAS (Desayuno, Almuerzo, Cena + 3 Snacks + Cardio) -->
       <div id="nut-sub-diary">
         <div id="meals-diary-container"></div>
       </div>
 
-      <!-- SUB-VISTA B: FOTO CON IA (CÁLCULO DE CALORÍAS POR FOTO) -->
+      <!-- SUB-VISTA B: FOTO CON IA Y EDITOR INTERACTIVO DE INGREDIENTES -->
       <div id="nut-sub-ai" style="display:none;">
         <div class="card">
           <div class="card-header">
             <div class="card-title">📸 Analizador de Platos por Foto (IA)</div>
-            <span class="badge badge-accent">Gemini Vision</span>
+            <span class="badge badge-gold">Editable</span>
           </div>
           <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:12px;">
-            Toma una foto de tu plato con la cámara o sube una imagen. La IA identificará cada alimento, estimará los gramos y calculará las calorías y macronutrientes automáticamente.
+            Toma una foto de tu plato. Cuando la IA te dé la lista de ingredientes detectados, podrás <strong>editar el peso en gramos de cada ingrediente</strong>, <strong>reemplazarlo por otro alimento de tu repositorio</strong> (ej. cambiar pan de ajonjolí 200g por pan de masa madre 100g) o <strong>crear el ingrediente</strong> al instante.
           </p>
 
-          <!-- Selector de Comida Destino -->
+          <!-- Selector de Comida Destino (Con los nuevos Snacks separados) -->
           <div class="form-group">
             <label class="form-label">¿En qué comida deseas registrarlo?</label>
             <select id="ai-meal-slot" class="form-control">
               <option value="Desayuno">🌅 Desayuno</option>
+              <option value="Snack Mañana">🥪 Snack Mañana</option>
               <option value="Almuerzo" selected>☀️ Almuerzo</option>
+              <option value="Snack Tarde">🍌 Snack Tarde / Pre-Entreno</option>
               <option value="Cena">🌙 Cena</option>
-              <option value="Snacks">🍎 Snacks / Post-Entreno</option>
+              <option value="Snack Noche">🥤 Snack Noche / Post-Entreno</option>
             </select>
           </div>
 
@@ -343,8 +443,8 @@
           <img id="ai-photo-preview" class="ai-photo-preview" alt="Vista previa del plato" />
 
           <div class="form-group">
-            <label class="form-label">Detalle opcional (ayuda a mayor precisión)</label>
-            <input type="text" id="ai-photo-hint" class="form-control" placeholder="Ej: Pechuga a la plancha con arroz y 2 huevos..." />
+            <label class="form-label">Detalle opcional para la IA (ej: "Hamburguesa con 100g pan masa madre")</label>
+            <input type="text" id="ai-photo-hint" class="form-control" placeholder="Ej: Hamburguesa casera en pan de masa madre..." />
           </div>
 
           <button id="btn-analyze-photo" class="btn btn-primary btn-block" onclick="analyzeFoodPhotoWithAI()">
@@ -359,26 +459,127 @@
           </div>
         </div>
 
-        <!-- Resultado Desglosado del Análisis por Foto -->
-        <div id="ai-analysis-results" class="card" style="display:none; border-color:var(--accent);">
+        <!-- Resultado Desglosado y 100% Editable del Análisis por Foto -->
+        <div id="ai-analysis-results" class="card" style="display:none; border-color:var(--gold);">
           <div class="card-header">
-            <div class="card-title">🍽️ Alimentos Detectados en el Plato</div>
-            <span class="badge badge-accent" id="ai-total-kcal-badge">0 kcal</span>
+            <div class="card-title">🍽️ Ingredientes Detectados (Editables)</div>
+            <span class="badge badge-gold" id="ai-total-kcal-badge">0 kcal</span>
           </div>
+          <p style="font-size:11.5px; color:var(--text-muted); margin-bottom:10px;">
+            💡 Cambia los <strong>gramos</strong> directamente en la casilla de cada ingrediente, o toca <strong>"🔄 Cambiar por Alimento / Crear"</strong> para sustituirlo por uno de tu base de datos.
+          </p>
+
           <div id="ai-detected-items-list"></div>
 
-          <div class="form-group" style="margin-top:12px;">
-            <label class="form-label">Ajustar tamaño de porción total: <strong id="ai-portion-scale-lbl">100% (1.0x)</strong></label>
+          <div style="display:flex; gap:8px; margin:10px 0;">
+            <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="openReplaceOrAddAIIngredientModal(-1)">
+              ➕ Añadir Otro Ingrediente
+            </button>
+            <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="saveAIMealAsCustomRecipe()">
+              👨‍🍳 Guardar como Receta
+            </button>
+          </div>
+
+          <div class="form-group" style="margin-top:10px;">
+            <label class="form-label">Escalar todo el plato: <strong id="ai-portion-scale-lbl">100% (1.0x)</strong></label>
             <input type="range" id="ai-portion-slider" min="0.5" max="2.0" step="0.1" value="1.0" style="width:100%;" oninput="updateAIPortionScale(this.value)" />
           </div>
 
           <button class="btn btn-primary btn-block" onclick="saveAIDetectedMealToDiary()">
-            ✅ Agregar Plato Completo al Diario
+            ✅ Agregar Plato al Diario
           </button>
         </div>
       </div>
 
-      <!-- SUB-VISTA C: ESCÁNER DE CÓDIGO DE BARRAS -->
+      <!-- SUB-VISTA C: MIS RECETAS PERSONALIZADAS (ESTILO FITIA) -->
+      <div id="nut-sub-recipes" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">👨‍🍳 Mis Recetas de La Masia</div>
+            <button class="btn btn-primary btn-sm" onclick="openRecipeBuilderModal()">➕ Crear Receta</button>
+          </div>
+          <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+            Arma tus propias recetas combinando varios alimentos de tu repositorio con sus pesos exactos y regístralas en 1 toque cuando las comas.
+          </p>
+          <div id="recipes-list-container"></div>
+        </div>
+      </div>
+
+      <!-- SUB-VISTA D: RUTINA DE AYUNO INTERMITENTE (ESTILO YAZIO) -->
+      <div id="nut-sub-fasting" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⏳ Rastreador de Ayuno Intermitente</div>
+            <select id="fasting-protocol-select" class="form-control" style="width:auto; padding:5px 10px; font-weight:700;" onchange="changeFastingProtocol(this.value)">
+              <option value="16">16:8 (16h ayuno / 8h comida)</option>
+              <option value="14">14:10 (14h ayuno / 10h comida)</option>
+              <option value="18">18:6 (18h ayuno / 6h comida)</option>
+              <option value="20">20:4 (Warrior / 20h ayuno)</option>
+              <option value="12">12:12 (Circadiano)</option>
+            </select>
+          </div>
+
+          <div class="fasting-hero">
+            <span class="badge badge-gold" id="fasting-phase-badge">Listo para comenzar</span>
+            <div class="fasting-ring-box">
+              <svg width="168" height="168" viewBox="0 0 168 168">
+                <circle cx="84" cy="84" r="72" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12" />
+                <circle id="fasting-ring-circle" cx="84" cy="84" r="72" fill="none" stroke="url(#barcaRingGrad)" stroke-width="12"
+                  stroke-linecap="round" stroke-dasharray="452" stroke-dashoffset="452"
+                  transform="rotate(-90 84 84)" style="transition: stroke-dashoffset 0.5s ease;" />
+              </svg>
+              <div class="fasting-ring-center">
+                <div style="font-size:11px; color:var(--text-muted);" id="fasting-timer-label">Transcurrido</div>
+                <div style="font-size:23px; font-weight:900; font-variant-numeric:tabular-nums;" id="fasting-timer-main">00:00:00</div>
+                <div style="font-size:11px; color:var(--gold); font-weight:700;" id="fasting-pct-label">0%</div>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; margin-bottom:12px;">
+              <div style="background:var(--bg-input); padding:9px; border-radius:10px;">
+                <div style="font-size:11px; color:var(--text-muted);">Inicio del Ayuno</div>
+                <div id="fasting-start-display" style="font-weight:800; font-size:13.5px;">--:--</div>
+              </div>
+              <div style="background:var(--bg-input); padding:9px; border-radius:10px;">
+                <div style="font-size:11px; color:var(--text-muted);">Meta / Fin de Ayuno</div>
+                <div id="fasting-end-display" style="font-weight:800; font-size:13.5px; color:var(--gold);">--:--</div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:8px; width:100%;">
+              <button id="btn-fasting-toggle" class="btn btn-primary btn-block" onclick="toggleFastingSession()">
+                ▶️ Iniciar Ayuno Ahora
+              </button>
+              <button id="btn-fasting-edit-start" class="btn btn-secondary" style="display:none;" onclick="editFastingStartTime()" title="Ajustar hora de inicio">
+                ✏️ Hora
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🕒 Historial de Ayunos Completados</div>
+          </div>
+          <div id="fasting-history-list"></div>
+        </div>
+      </div>
+
+      <!-- SUB-VISTA E: APARTADO DE SUPLEMENTOS -->
+      <div id="nut-sub-supplements" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">💊 Stack Ciutat Esportiva</div>
+            <button class="btn btn-primary btn-sm" onclick="openAddSupplementModal()">➕ Añadir</button>
+          </div>
+          <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+            Marca los suplementos que ya tomaste hoy (ej. Creatina 5g, Proteína, Omega 3, Vitaminas). Cumplir con tu stack suma a tu racha Culé.
+          </p>
+          <div id="supplements-full-list" class="supp-grid"></div>
+        </div>
+      </div>
+
+      <!-- SUB-VISTA F: ESCÁNER DE CÓDIGO DE BARRAS -->
       <div id="nut-sub-barcode" style="display:none;">
         <div class="card">
           <div class="card-header">
@@ -386,7 +587,7 @@
             <span class="badge badge-blue">OpenFoodFacts</span>
           </div>
           <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:10px;">
-            Apunta con la cámara al código de barras de cualquier producto (avena, yogurt, atún, proteína, galletas, bebidas) o escríbelo manualmente.
+            Apunta con la cámara al código de barras de cualquier producto de supermercado o escríbelo manualmente.
           </p>
 
           <div id="barcode-reader-box" class="scanner-box">
@@ -413,23 +614,22 @@
           </div>
         </div>
 
-        <!-- Resultado del Producto Escaneado -->
         <div id="barcode-product-card" class="card" style="display:none; border-color:var(--primary-blue);"></div>
       </div>
 
-      <!-- SUB-VISTA D: BASE DE DATOS DE ALIMENTOS + BUSCADOR ONLINE -->
+      <!-- SUB-VISTA G: BASE DE DATOS DE ALIMENTOS + BUSCADOR ONLINE -->
       <div id="nut-sub-search" style="display:none;">
         <div class="card">
           <div style="display:flex; gap:8px; margin-bottom:10px;">
-            <input type="text" id="food-db-search" class="form-control" placeholder="🔍 Buscar alimento (pollo, arroz, huevo, atún...)" oninput="renderFoodDatabaseList()" />
+            <input type="text" id="food-db-search" class="form-control" placeholder="🔍 Buscar alimento (masa madre, pollo, arroz...)" oninput="renderFoodDatabaseList()" />
             <button class="btn btn-blue btn-sm" onclick="searchOpenFoodFactsByText()" title="Buscar en base mundial OpenFoodFacts">
               🌐 Online
             </button>
           </div>
 
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <div style="font-size:12px; color:var(--text-muted);">Selecciona un alimento o crea uno propio:</div>
-            <button class="btn btn-secondary btn-sm" onclick="openCustomFoodModal()">➕ Crear Alimento</button>
+            <div style="font-size:12px; color:var(--text-muted);">Repositorio de alimentos (locales y creados):</div>
+            <button class="btn btn-primary btn-sm" onclick="openCustomFoodModal()">➕ Crear Alimento</button>
           </div>
 
           <div id="food-database-results"></div>
@@ -438,13 +638,22 @@
     </section>
 
     <!-- ====================================================================
-         4. VISTA: PROGRESO, GRÁFICOS Y MEDIDAS CORPORALES
+         4. VISTA: PROGRESO, META DE PESO YAZIO Y GRÁFICOS
          ==================================================================== -->
     <section id="view-progress" class="view-section">
+      <!-- Tarjeta de Progreso hacia el Peso Meta (Estilo Yazio) -->
+      <div class="card" style="border-color: rgba(237,187,0,0.45);">
+        <div class="card-header">
+          <div class="card-title">🎯 Mi Meta de Peso Culé (Estilo Yazio)</div>
+          <button class="btn btn-ghost btn-sm" onclick="switchTab('settings')">Cambiar Meta ⚙️</button>
+        </div>
+        <div id="yazio-weight-goal-summary"></div>
+      </div>
+
       <!-- Gráfico de Progreso de Fuerza por Ejercicio -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">📈 Evolución de Fuerza y 1RM</div>
+          <div class="card-title">📈 Evolución de Fuerza y 1RM (La Masia)</div>
         </div>
         <div class="form-group">
           <select id="progress-exercise-select" class="form-control" onchange="renderStrengthChart()"></select>
@@ -476,16 +685,16 @@
     </section>
 
     <!-- ====================================================================
-         5. VISTA: AJUSTES, CALCULADORA TDEE, IA Y COPIA DE SEGURIDAD
+         5. VISTA: AJUSTES, PLANIFICADOR DE PESO YAZIO, RECORDATORIOS Y BACKUP
          ==================================================================== -->
     <section id="view-settings" class="view-section">
-      <!-- Calculadora Automática de Calorías y Macros (TDEE) -->
+      <!-- Planificador de Calorías según Peso Objetivo (Estilo Yazio / Fitia) -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">🎯 Metas de Calorías y Macros (Calculadora TDEE)</div>
+          <div class="card-title">🎯 Planificador de Peso Meta y Calorías (Yazio / Fitia)</div>
         </div>
         <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
-          Calcula automáticamente cuántas calorías y gramos de proteína, carbohidratos y grasas necesitas según tu cuerpo y objetivo, o edítalos manualmente.
+          Ingresa tu peso actual y el <strong>peso que deseas alcanzar</strong>. La app calculará tus calorías exactas, distribución de macronutrientes y la fecha estimada en que lograrás tu objetivo.
         </p>
 
         <div class="form-row">
@@ -502,10 +711,14 @@
           </div>
         </div>
 
-        <div class="form-row">
+        <div class="form-row" style="grid-template-columns: repeat(3, 1fr);">
           <div class="form-group">
             <label class="form-label">Peso Actual (kg)</label>
-            <input type="number" id="tdee-weight" class="form-control" step="0.1" value="75" />
+            <input type="number" id="tdee-weight" class="form-control" step="0.1" value="75" oninput="updateYazioProjectionBanner()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="color:var(--accent);">Peso Meta (kg)</label>
+            <input type="number" id="tdee-target-weight" class="form-control" step="0.1" value="70" style="border-color:var(--accent);" oninput="updateYazioProjectionBanner()" />
           </div>
           <div class="form-group">
             <label class="form-label">Estatura (cm)</label>
@@ -514,33 +727,34 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Nivel de Actividad Semanal</label>
+          <label class="form-label">Nivel de Actividad Diaria</label>
           <select id="tdee-activity" class="form-control">
-            <option value="1.2">Sedentario (Poco ejercicio)</option>
-            <option value="1.375">Ligero (Gym 1 a 3 días/semana)</option>
+            <option value="1.2">Sedentario (Oficina / poco movimiento)</option>
+            <option value="1.375">Ligero (Entreno 1 a 3 días/semana)</option>
             <option value="1.55" selected>Moderado (Gym 3 a 5 días/semana)</option>
             <option value="1.725">Intenso (Gym 6 a 7 días/semana)</option>
-            <option value="1.9">Atleta / Doble sesión o trabajo físico</option>
+            <option value="1.9">Atleta / Trabajo físico pesado</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Objetivo Principal</label>
-          <select id="tdee-goal" class="form-control">
-            <option value="-450">🔥 Definición / Pérdida de Grasa (-450 kcal)</option>
-            <option value="-250">⚡ Recomposición Corporal (-250 kcal)</option>
-            <option value="0">⚖️ Mantenimiento (0 kcal)</option>
-            <option value="300" selected>💪 Volumen Muscular Limpio (+300 kcal)</option>
-            <option value="500">🦍 Volumen Agresivo (+500 kcal)</option>
+          <label class="form-label">Ritmo Semanal Deseado (Yazio Pace)</label>
+          <select id="tdee-weekly-rate" class="form-control" onchange="updateYazioProjectionBanner()">
+            <option value="0.25">Suave y Sostenible (0.25 kg por semana • ±275 kcal)</option>
+            <option value="0.5" selected>Recomendado Fitness (0.50 kg por semana • ±550 kcal)</option>
+            <option value="0.75">Rápido / Agresivo (0.75 kg por semana • ±825 kcal)</option>
+            <option value="1.0">Máximo (1.0 kg por semana • ±1100 kcal)</option>
           </select>
         </div>
 
-        <button class="btn btn-secondary btn-block" style="margin-bottom:14px;" onclick="calculateAndApplyTDEE()">
-          🧮 Calcular Mis Calorías y Macros Ideales
+        <div id="yazio-projection-banner" style="background:var(--bg-input); border:1px solid var(--border); padding:10px 12px; border-radius:10px; margin-bottom:12px; font-size:12.5px;"></div>
+
+        <button class="btn btn-primary btn-block" style="margin-bottom:14px;" onclick="calculateAndApplyTDEE()">
+          🧮 Calcular Plan para Alcanzar Mi Peso Meta
         </button>
 
         <div style="border-top:1px solid var(--border); padding-top:12px;">
-          <div class="form-label" style="margin-bottom:8px;">Metas Diarias Activas (puedes ajustarlas a tu gusto):</div>
+          <div class="form-label" style="margin-bottom:8px;">Metas Diarias Activas (también editables manualmente):</div>
           <div class="form-row-4">
             <div>
               <label class="form-label">Kcal</label>
@@ -559,10 +773,41 @@
               <input type="number" id="goal-fat" class="form-control" value="70" />
             </div>
           </div>
-          <button class="btn btn-primary btn-block" style="margin-top:10px;" onclick="saveMacroGoals()">
-            💾 Guardar Metas Diarias
+          <button class="btn btn-secondary btn-block" style="margin-top:10px;" onclick="saveMacroGoals()">
+            💾 Guardar Metas Manuales
           </button>
         </div>
+      </div>
+
+      <!-- Centro de Recordatorios y Notificaciones -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔔 Recordatorios y Notificaciones</div>
+          <button class="btn btn-blue btn-sm" onclick="requestAndTestNotification()">🔔 Activar / Probar</button>
+        </div>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+          Configura alertas para no olvidar tu creatina/suplementos, vasos de agua, registro de comidas o fin del ayuno intermitente.
+        </p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">💊 Hora Recordatorio Suplementos</label>
+            <input type="time" id="rem-supp-time" class="form-control" value="10:00" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">🏋️ Hora Recordatorio Entreno/Cena</label>
+            <input type="time" id="rem-workout-time" class="form-control" value="18:30" />
+          </div>
+        </div>
+
+        <div class="form-group" style="display:flex; align-items:center; justify-content:space-between; background:var(--bg-input); padding:10px 12px; border-radius:10px;">
+          <span style="font-size:13px; font-weight:600;">💧 Recordarme beber agua cada 90 min</span>
+          <input type="checkbox" id="rem-water-enabled" style="width:20px; height:20px;" />
+        </div>
+
+        <button class="btn btn-primary btn-block" onclick="saveRemindersConfig()">
+          💾 Guardar Recordatorios
+        </button>
       </div>
 
       <!-- Configuración de IA para Fotos de Comida -->
@@ -571,17 +816,22 @@
           <div class="card-title">🤖 IA para Fotos de Comida (Google Gemini)</div>
           <span class="badge badge-accent">Gratis</span>
         </div>
-        <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">
-          Para que la app analice fotos reales de tus platos con Inteligencia Artificial directamente desde tu celular y sin pagar suscripciones, pega aquí tu API Key gratuita de <strong>Google AI Studio</strong> (se guarda únicamente en la memoria de tu teléfono).
-        </p>
         <div class="form-group">
           <label class="form-label">Gemini API Key</label>
           <input type="password" id="settings-gemini-key" class="form-control" placeholder="AIzaSy..." />
         </div>
+        <div class="form-group">
+          <label class="form-label">Modelo Gemini Vision</label>
+          <select id="settings-gemini-model" class="form-control">
+            <option value="gemini-2.5-flash" selected>gemini-2.5-flash (Recomendado)</option>
+            <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+            <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+          </select>
+        </div>
         <div style="display:flex; gap:8px;">
-          <button class="btn btn-primary" style="flex:1;" onclick="saveGeminiApiKey()">Guardar API Key</button>
+          <button class="btn btn-primary" style="flex:1;" onclick="saveGeminiApiKey()">Guardar Configuración IA</button>
           <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="btn btn-secondary">
-            🔑 Obtener Gratis
+            🔑 Obtener Key
           </a>
         </div>
       </div>
@@ -591,9 +841,6 @@
         <div class="card-header">
           <div class="card-title">💾 Mis Datos y Copia de Seguridad</div>
         </div>
-        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
-          Todos tus entrenamientos, rutinas, récords, fotos y comidas se guardan en tu dispositivo. Puedes descargar una copia de seguridad en cualquier momento.
-        </p>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
           <button class="btn btn-blue btn-block" onclick="exportBackupJSON()">
             ⬇️ Exportar Backup
@@ -625,12 +872,13 @@
     </div>
 
     <!-- ====================================================================
-         BARRA DE NAVEGACIÓN INFERIOR (5 PESTAÑAS)
+         BARRA DE NAVEGACIÓN INFERIOR (5 PESTAÑAS BARÇA)
          ==================================================================== -->
     <nav class="bottom-nav">
       <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
-        <span>Inicio</span>
+        <!-- Icono Estadio Camp Nou / Escudo -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/><path d="M12 2v20M4 11h16"/></svg>
+        <span>Camp Nou</span>
       </button>
       <button class="nav-item" id="nav-workout" onclick="switchTab('workout')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6.5 6.5L17.5 17.5M3 10l7-7M14 21l7-7M2 6l4-4M18 22l4-4"/></svg>
@@ -638,15 +886,16 @@
       </button>
       <button class="nav-item" id="nav-nutrition" onclick="switchTab('nutrition')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2c4 0 8 3.5 8 9 0 6-5 11-8 11S4 17 4 11c0-5.5 4-9 8-9zm0 0v5"/></svg>
-        <span>Nutrición IA</span>
+        <span>Masia IA</span>
       </button>
       <button class="nav-item" id="nav-progress" onclick="switchTab('progress')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg>
-        <span>Progreso</span>
+        <!-- Icono Trofeo / Palmarés -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        <span>Palmarés</span>
       </button>
       <button class="nav-item" id="nav-settings" onclick="switchTab('settings')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>Ajustes</span>
+        <span>Directiva</span>
       </button>
     </nav>
   </div>

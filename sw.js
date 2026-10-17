@@ -1,4 +1,4 @@
-const CACHE_NAME = 'titan-gym-cache-v2';
+const CACHE_NAME = 'yanballin-cache-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -34,5 +34,17 @@ self.addEventListener('fetch', (event) => {
         return networkResponse;
       })
       .catch(() => caches.match(event.request))
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      if (clientList.length > 0) {
+        return clientList[0].focus();
+      }
+      return self.clients.openWindow('./index.html');
+    })
   );
 });

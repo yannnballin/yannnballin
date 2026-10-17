@@ -1,5 +1,6 @@
 // ============================================================================
-// TITAN GYM & AI NUTRITION - Base de Datos Inicial (Ejercicios, Rutinas, Alimentos)
+// TITAN GYM & AI NUTRITION - Base de Datos Inicial
+// (Ejercicios, Rutinas, Alimentos, Recetas, Cardio y Suplementos)
 // ============================================================================
 
 const DEFAULT_EXERCISES = [
@@ -19,7 +20,7 @@ const DEFAULT_EXERCISES = [
   { id: 'ex_db_row', name: 'Remo con Mancuerna a Una Mano', muscle: 'Espalda', equipment: 'Mancuernas', notes: 'Lleva la mancuerna hacia la cadera en forma de arco.' },
   { id: 'ex_straight_arm_pulldown', name: 'Pull-Over en Polea Alta (Brazos Rectos)', muscle: 'Espalda', equipment: 'Polea', notes: 'Aísla los dorsales manteniendo los brazos casi rectos.' },
 
-  // PIERNAS (CUÁDRICEPS / ISQUIOS / GLÚTEOS / PANTORRILLAS)
+  // PIERNAS
   { id: 'ex_squat', name: 'Sentadilla Libre con Barra', muscle: 'Piernas', equipment: 'Barra', notes: 'Core firme, rodillas alineadas con la punta de los pies, buena profundidad.' },
   { id: 'ex_hack_squat', name: 'Sentadilla Hack', muscle: 'Piernas', equipment: 'Máquina', notes: 'Espalda bien apoyada, pies en la parte baja para mayor énfasis en cuádriceps.' },
   { id: 'ex_leg_press', name: 'Prensa de Piernas 45°', muscle: 'Piernas', equipment: 'Máquina', notes: 'No bloquees las rodillas por completo arriba; evita despegar el glúteo.' },
@@ -50,7 +51,7 @@ const DEFAULT_EXERCISES = [
   { id: 'ex_skullcrushers', name: 'Press Francés con Barra Z', muscle: 'Tríceps', equipment: 'Barra', notes: 'Baja la barra hacia la frente o detrás de la cabeza.' },
   { id: 'ex_dips_triceps', name: 'Fondos en Paralelas (Tríceps)', muscle: 'Tríceps', equipment: 'Peso Corporal', notes: 'Torso vertical y codos cerca del cuerpo.' },
 
-  // CORE & CARDIO
+  // CORE
   { id: 'ex_cable_crunch', name: 'Crunch Abdominal en Polea Alta', muscle: 'Core', equipment: 'Polea', notes: 'Flexiona la columna vertebral, no la cadera.' },
   { id: 'ex_hanging_leg_raise', name: 'Elevación de Piernas Colgado', muscle: 'Core', equipment: 'Peso Corporal', notes: 'Sube la pelvis hacia el pecho evitando el balanceo.' },
   { id: 'ex_plank', name: 'Plancha Abdominal', muscle: 'Core', equipment: 'Peso Corporal', notes: 'Abdomen y glúteos contraídos.' }
@@ -59,13 +60,13 @@ const DEFAULT_EXERCISES = [
 const DEFAULT_ROUTINES = [
   {
     id: 'rt_push',
-    name: 'Día 1: Push (Pecho, Hombros y Tríceps)',
-    tag: 'PPL • Fuerza e Hipertrofia',
-    color: '#10b981',
+    name: 'Día 1: Push Blaugrana (Pecho, Hombros y Tríceps)',
+    tag: '🔵🔴 PPL • Fuerza Camp Nou',
+    color: '#A50044',
     exercises: [
       { exerciseId: 'ex_bench_press', targetSets: 4, targetReps: '6-8', restSeconds: 150 },
       { exerciseId: 'ex_incline_db_press', targetSets: 3, targetReps: '8-10', restSeconds: 120 },
-      { id_ref: 'ex_db_shoulder_press', exerciseId: 'ex_db_shoulder_press', targetSets: 3, targetReps: '8-10', restSeconds: 120 },
+      { exerciseId: 'ex_db_shoulder_press', targetSets: 3, targetReps: '8-10', restSeconds: 120 },
       { exerciseId: 'ex_lateral_raises', targetSets: 4, targetReps: '12-15', restSeconds: 75 },
       { exerciseId: 'ex_tricep_pushdown', targetSets: 3, targetReps: '10-12', restSeconds: 90 },
       { exerciseId: 'ex_overhead_tricep_ext', targetSets: 3, targetReps: '10-12', restSeconds: 90 }
@@ -73,9 +74,9 @@ const DEFAULT_ROUTINES = [
   },
   {
     id: 'rt_pull',
-    name: 'Día 2: Pull (Espalda, Deltoides Post. y Bíceps)',
-    tag: 'PPL • Tracción',
-    color: '#3b82f6',
+    name: 'Día 2: Pull La Masia (Espalda, Deltoides Post. y Bíceps)',
+    tag: '🔵🔴 PPL • Tracción Culé',
+    color: '#004D98',
     exercises: [
       { exerciseId: 'ex_lat_pulldown', targetSets: 4, targetReps: '8-10', restSeconds: 120 },
       { exerciseId: 'ex_barbell_row', targetSets: 4, targetReps: '6-8', restSeconds: 150 },
@@ -87,9 +88,9 @@ const DEFAULT_ROUTINES = [
   },
   {
     id: 'rt_legs',
-    name: 'Día 3: Legs (Pierna Completa y Core)',
-    tag: 'PPL • Tren Inferior',
-    color: '#f59e0b',
+    name: 'Día 3: Legs Balón de Oro (Pierna Completa y Core)',
+    tag: '🏆 PPL • Potencia de Cantera',
+    color: '#EDBB00',
     exercises: [
       { exerciseId: 'ex_squat', targetSets: 4, targetReps: '6-8', restSeconds: 180 },
       { exerciseId: 'ex_rdl', targetSets: 4, targetReps: '8-10', restSeconds: 150 },
@@ -101,9 +102,9 @@ const DEFAULT_ROUTINES = [
   },
   {
     id: 'rt_upper',
-    name: 'Torso Completo (Upper Body)',
-    tag: 'Torso / Pierna',
-    color: '#8b5cf6',
+    name: 'Torso Completo Capitán Puyol (Upper Body)',
+    tag: '🦁 Torso / Pierna • ADN Barça',
+    color: '#DB0030',
     exercises: [
       { exerciseId: 'ex_incline_db_press', targetSets: 3, targetReps: '8-10', restSeconds: 120 },
       { exerciseId: 'ex_pull_ups', targetSets: 3, targetReps: '6-10', restSeconds: 120 },
@@ -121,7 +122,8 @@ const DEFAULT_FOODS = [
   // Proteínas
   { id: 'fd_chicken_breast', name: 'Pechuga de Pollo (Cocida)', brand: 'Natural', servingG: 100, kcal: 165, protein: 31, carbs: 0, fat: 3.6, barcode: '100001' },
   { id: 'fd_chicken_raw', name: 'Pechuga de Pollo (Cruda)', brand: 'Natural', servingG: 100, kcal: 120, protein: 22.5, carbs: 0, fat: 2.6, barcode: '100002' },
-  { id: 'fd_beef_lean', name: 'Carne de Res Magra (Cocida)', brand: 'Natural', servingG: 100, kcal: 215, protein: 28, carbs: 0, fat: 11, barcode: '100003' },
+  { id: 'fd_beef_lean', name: 'Carne de Res Magra / Bistec (Cocida)', brand: 'Natural', servingG: 100, kcal: 215, protein: 28, carbs: 0, fat: 11, barcode: '100003' },
+  { id: 'fd_burger_patty', name: 'Carne de Hamburguesa de Res (90/10)', brand: 'Natural', servingG: 120, kcal: 255, protein: 31, carbs: 0, fat: 14, barcode: '100040' },
   { id: 'fd_egg_whole', name: 'Huevo Entero Grande (1 unidad ~60g)', brand: 'Natural', servingG: 60, kcal: 86, protein: 7.5, carbs: 0.6, fat: 6, barcode: '100004' },
   { id: 'fd_egg_whites', name: 'Claras de Huevo', brand: 'Natural', servingG: 100, kcal: 52, protein: 11, carbs: 0.7, fat: 0.2, barcode: '100005' },
   { id: 'fd_tuna_water', name: 'Atún en Agua (Escurrido)', brand: 'Lata', servingG: 120, kcal: 130, protein: 29, carbs: 0, fat: 1.2, barcode: '7501045403014' },
@@ -129,17 +131,21 @@ const DEFAULT_FOODS = [
   { id: 'fd_whey_scoop', name: 'Proteína Whey Isolate/Concentrate (1 Scoop)', brand: 'Suplemento', servingG: 30, kcal: 120, protein: 24, carbs: 3, fat: 1.5, barcode: '748927024081' },
   { id: 'fd_greek_yogurt', name: 'Yogurt Griego Sin Azúcar', brand: 'Lácteo', servingG: 150, kcal: 90, protein: 15, carbs: 5.5, fat: 0.5, barcode: '100009' },
   { id: 'fd_cottage_cheese', name: 'Queso Cottage / Requesón Bajo en Grasa', brand: 'Lácteo', servingG: 100, kcal: 85, protein: 12, carbs: 3.5, fat: 2.5, barcode: '100010' },
+  { id: 'fd_cheese_mozzarella', name: 'Queso Mozzarella / Oaxaca Light', brand: 'Lácteo', servingG: 30, kcal: 78, protein: 7.5, carbs: 1, fat: 5, barcode: '100041' },
+  { id: 'fd_cheese_cheddar', name: 'Queso Cheddar / Americano (1 loncha)', brand: 'Lácteo', servingG: 28, kcal: 113, protein: 6.5, carbs: 0.5, fat: 9.3, barcode: '100042' },
   { id: 'fd_milk_whole', name: 'Leche Entera (1 vaso 250ml)', brand: 'Lácteo', servingG: 250, kcal: 150, protein: 8, carbs: 12, fat: 8, barcode: '100011' },
   { id: 'fd_milk_skim', name: 'Leche Deslactosada / Light (250ml)', brand: 'Lácteo', servingG: 250, kcal: 105, protein: 8, carbs: 12, fat: 2.5, barcode: '100012' },
 
-  // Carbohidratos
+  // Panes, Cereales y Carbohidratos
+  { id: 'fd_sourdough_bread', name: 'Pan de Masa Madre (Sourdough)', brand: 'Artesanal', servingG: 100, kcal: 245, protein: 9.5, carbs: 47, fat: 1.8, barcode: '100043' },
+  { id: 'fd_burger_bun', name: 'Pan de Hamburguesa con Ajonjolí', brand: 'Panadería', servingG: 85, kcal: 238, protein: 7.5, carbs: 42, fat: 4.2, barcode: '100044' },
+  { id: 'fd_whole_bread', name: 'Pan Integral de Molde (2 rebanadas)', brand: 'Panadería', servingG: 60, kcal: 150, protein: 6, carbs: 26, fat: 2, barcode: '100019' },
   { id: 'fd_white_rice', name: 'Arroz Blanco (Cocido)', brand: 'Natural', servingG: 100, kcal: 130, protein: 2.7, carbs: 28, fat: 0.3, barcode: '100013' },
   { id: 'fd_brown_rice', name: 'Arroz Integral (Cocido)', brand: 'Natural', servingG: 100, kcal: 112, protein: 2.6, carbs: 23.5, fat: 0.9, barcode: '100014' },
   { id: 'fd_oats', name: 'Avena en Hojuelas (Cruda)', brand: 'Cereal', servingG: 50, kcal: 190, protein: 6.5, carbs: 34, fat: 3.3, barcode: '100015' },
-  { id: 'fd_potato', name: 'Papa / Patata Cocida o al Horno', brand: 'Natural', servingG: 150, kcal: 130, protein: 3, carbs: 30, fat: 0.2, barcode: '100016' },
+  { id: 'fd_potato', name: 'Papa / Patata Cocida o en Airfryer', brand: 'Natural', servingG: 150, kcal: 130, protein: 3, carbs: 30, fat: 0.2, barcode: '100016' },
   { id: 'fd_sweet_potato', name: 'Camote / Batata / Boniato Cocido', brand: 'Natural', servingG: 150, kcal: 135, protein: 2.5, carbs: 31, fat: 0.2, barcode: '100017' },
   { id: 'fd_pasta_cooked', name: 'Pasta / Espagueti (Cocido)', brand: 'Trigo', servingG: 100, kcal: 158, protein: 5.8, carbs: 31, fat: 0.9, barcode: '100018' },
-  { id: 'fd_whole_bread', name: 'Pan Integral de Molde (2 rebanadas)', brand: 'Panadería', servingG: 60, kcal: 150, protein: 6, carbs: 26, fat: 2, barcode: '100019' },
   { id: 'fd_corn_tortilla', name: 'Tortilla de Maíz (2 unidades)', brand: 'Tradicional', servingG: 60, kcal: 130, protein: 3.4, carbs: 27, fat: 1.5, barcode: '100020' },
   { id: 'fd_beans_cooked', name: 'Frijoles / Lentejas Cocidas', brand: 'Legumbre', servingG: 100, kcal: 120, protein: 8.5, carbs: 21, fat: 0.5, barcode: '100021' },
   { id: 'fd_arepa', name: 'Arepa de Maíz Asada (Mediana)', brand: 'Tradicional', servingG: 100, kcal: 195, protein: 4.5, carbs: 41, fat: 1.2, barcode: '100022' },
@@ -149,17 +155,62 @@ const DEFAULT_FOODS = [
   { id: 'fd_apple', name: 'Manzana (1 mediana ~150g)', brand: 'Fruta', servingG: 150, kcal: 78, protein: 0.4, carbs: 21, fat: 0.3, barcode: '100024' },
   { id: 'fd_strawberries', name: 'Fresas / Frutillas', brand: 'Fruta', servingG: 100, kcal: 32, protein: 0.7, carbs: 7.7, fat: 0.3, barcode: '100025' },
   { id: 'fd_broccoli', name: 'Brócoli y Vegetales Verdes al Vapor', brand: 'Verdura', servingG: 100, kcal: 35, protein: 2.4, carbs: 7, fat: 0.4, barcode: '100026' },
-  { id: 'fd_mixed_salad', name: 'Ensalada Mixta (Lechuga, Tomate, Pepino)', brand: 'Verdura', servingG: 150, kcal: 30, protein: 1.5, carbs: 6, fat: 0.3, barcode: '100027' },
+  { id: 'fd_mixed_salad', name: 'Ensalada Mixta (Lechuga, Tomate, Cebolla)', brand: 'Verdura', servingG: 150, kcal: 30, protein: 1.5, carbs: 6, fat: 0.3, barcode: '100027' },
 
   // Grasas Saludables y Otros
   { id: 'fd_avocado', name: 'Aguacate / Palta', brand: 'Natural', servingG: 100, kcal: 160, protein: 2, carbs: 8.5, fat: 14.7, barcode: '100028' },
   { id: 'fd_peanut_butter', name: 'Crema de Maní / Cacahuate Natural (1 cda)', brand: 'Natural', servingG: 16, kcal: 95, protein: 4, carbs: 3, fat: 8, barcode: '100029' },
   { id: 'fd_olive_oil', name: 'Aceite de Oliva Extra Virgen (1 cda 10g)', brand: 'Natural', servingG: 10, kcal: 88, protein: 0, carbs: 0, fat: 10, barcode: '100030' },
-  { id: 'fd_almonds', name: 'Almendras o Nueces (1 puñado 30g)', brand: 'Fruto Seco', servingG: 30, kcal: 175, protein: 6, carbs: 6, fat: 15, barcode: '100031' },
+  { id: 'fd_almonds', name: 'Almendras o Nueces (1 puñado 30g)', brand: 'Fruto Seco', servingG: 30, kcal: 175, protein: 6, carbs: 6, fat: 15, barcode: '100031' }
+];
 
-  // Comidas Rápidas / Platos Comunes
-  { id: 'fd_chicken_rice_bowl', name: 'Plato Fitness: Pollo + Arroz + Ensalada', brand: 'Casero', servingG: 400, kcal: 520, protein: 45, carbs: 62, fat: 9, barcode: '100032' },
-  { id: 'fd_protein_shake_banana', name: 'Batido Proteico con Leche, Avena y Plátano', brand: 'Casero', servingG: 450, kcal: 480, protein: 38, carbs: 64, fat: 7.5, barcode: '100033' },
-  { id: 'fd_burger', name: 'Hamburguesa de Res con Queso', brand: 'Restaurante', servingG: 220, kcal: 560, protein: 30, carbs: 42, fat: 29, barcode: '100034' },
-  { id: 'fd_pizza_slice', name: 'Pizza de Queso/Pepperoni (1 porción)', brand: 'Restaurante', servingG: 110, kcal: 285, protein: 12, carbs: 36, fat: 10, barcode: '100035' }
+// Catálogo de Actividades de Cardio (con equivalente metabólico MET para cálculo exacto según peso)
+const DEFAULT_CARDIO_ACTIVITIES = [
+  { id: 'cd_soccer', name: '⚽ Partido de Fútbol / Pichanga Estilo Barça', met: 8.5 },
+  { id: 'cd_run_mod', name: '🏃 Correr / Trotar (Ritmo Ciutat Esportiva 9-10 km/h)', met: 9.8 },
+  { id: 'cd_run_fast', name: '⚡ Sprints por la Banda / Series (12+ km/h)', met: 11.8 },
+  { id: 'cd_incline_walk', name: '⛰️ Caminadora con Inclinación (12-3-30 / Caminata rápida)', met: 6.0 },
+  { id: 'cd_walk', name: '🚶 Caminar al aire libre / Pasos', met: 3.8 },
+  { id: 'cd_cycling', name: '🚴 Bicicleta Estática / Spinning / Ciclismo', met: 8.0 },
+  { id: 'cd_elliptical', name: '🔄 Elíptica (Intensidad media-alta)', met: 6.5 },
+  { id: 'cd_jump_rope', name: '🪢 Saltar la Cuerda', met: 11.0 },
+  { id: 'cd_hiit', name: '🔥 HIIT / Presión Alta Estilo Hansi Flick', met: 9.5 },
+  { id: 'cd_stairs', name: '🪜 Escaladora / Gradas del Camp Nou', met: 8.8 },
+  { id: 'cd_swimming', name: '🏊 Natación', met: 8.3 },
+  { id: 'cd_boxing', name: '🥊 Boxeo / Saco / Artes Marciales', met: 9.0 }
+];
+
+// Suplementos por defecto para el checklist diario
+const DEFAULT_SUPPLEMENTS = [
+  { id: 'sup_creatine', name: 'Creatina Monohidratada', dose: '5 g', timing: 'Post-entreno o cualquier hora', icon: '⚡' },
+  { id: 'sup_whey', name: 'Proteína Whey', dose: '1 scoop (30g)', timing: 'Post-entreno / Snack', icon: '🥤' },
+  { id: 'sup_omega3', name: 'Omega 3 (EPA/DHA)', dose: '1-2 cápsulas', timing: 'Con el almuerzo', icon: '🐟' },
+  { id: 'sup_vitd', name: 'Vitamina D3 + Magnesio', dose: '1 dosis', timing: 'Por la mañana / noche', icon: '☀️' },
+  { id: 'sup_pre', name: 'Cafeína / Pre-Entreno Culé', dose: '1 servicio', timing: '30 min antes de entrenar', icon: '🔵' }
+];
+
+// Recetas iniciales de ejemplo
+const DEFAULT_RECIPES = [
+  {
+    id: 'rec_burger_sourdough',
+    name: 'Hamburguesa Fitness en Pan de Masa Madre',
+    servings: 1,
+    ingredients: [
+      { foodId: 'fd_sourdough_bread', name: 'Pan de Masa Madre (Sourdough)', grams: 100, kcal: 245, protein: 9.5, carbs: 47, fat: 1.8 },
+      { foodId: 'fd_burger_patty', name: 'Carne de Hamburguesa de Res (90/10)', grams: 150, kcal: 319, protein: 38.8, carbs: 0, fat: 17.5 },
+      { foodId: 'fd_cheese_mozzarella', name: 'Queso Mozzarella / Oaxaca Light', grams: 30, kcal: 78, protein: 7.5, carbs: 1, fat: 5 },
+      { foodId: 'fd_avocado', name: 'Aguacate / Palta', grams: 50, kcal: 80, protein: 1, carbs: 4.3, fat: 7.4 }
+    ]
+  },
+  {
+    id: 'rec_power_oats',
+    name: 'Bowl de Avena Proteico con Plátano y Maní',
+    servings: 1,
+    ingredients: [
+      { foodId: 'fd_oats', name: 'Avena en Hojuelas (Cruda)', grams: 60, kcal: 228, protein: 7.8, carbs: 40.8, fat: 4.0 },
+      { foodId: 'fd_whey_scoop', name: 'Proteína Whey Isolate/Concentrate (1 Scoop)', grams: 30, kcal: 120, protein: 24, carbs: 3, fat: 1.5 },
+      { foodId: 'fd_banana', name: 'Plátano / Banano (1 mediano ~120g)', grams: 120, kcal: 105, protein: 1.3, carbs: 27, fat: 0.4 },
+      { foodId: 'fd_peanut_butter', name: 'Crema de Maní / Cacahuate Natural (1 cda)', grams: 16, kcal: 95, protein: 4, carbs: 3, fat: 8 }
+    ]
+  }
 ];
