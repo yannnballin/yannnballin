@@ -13,7 +13,7 @@ let appData = {
     fatGoal: 70,
     waterGoalMl: 2500,
     geminiApiKey: '',
-    geminiModel: 'gemini-2.5-flash',
+    geminiModel: 'gemini-3.8-flash',
     tdeeProfile: {
       sex: 'M',
       age: 25,
@@ -1966,7 +1966,7 @@ function updateAIKeyStatusBadge() {
   const statusEl = document.getElementById('ai-key-status-text');
   if (!statusEl) return;
   if (appData.settings.geminiApiKey && appData.settings.geminiApiKey.trim().length > 10) {
-    statusEl.innerHTML = `🟢 <strong>IA Gemini Vision Activa</strong> (${escapeHtml(appData.settings.geminiModel || 'gemini-2.5-flash')})`;
+    statusEl.innerHTML = `🟢 <strong>IA Gemini Vision Activa</strong> (${escapeHtml(appData.settings.geminiModel || 'gemini-3.8-flash')})`;
   } else {
     statusEl.innerHTML = '🟡 <strong>Sin API Key</strong> (Configúrala gratis en Ajustes ⚙️)';
   }
@@ -2039,7 +2039,7 @@ async function analyzeFoodPhotoWithAI() {
     saveAppData();
   }
   const apiKey = (appData.settings.geminiApiKey || inputKey || '').trim();
-  const modelName = appData.settings.geminiModel || 'gemini-2.5-flash';
+  const modelName = appData.settings.geminiModel || 'gemini-3.8-flash';
   const btn = document.getElementById('btn-analyze-photo');
   const errorBox = document.getElementById('ai-error-box');
   const resultsCard = document.getElementById('ai-analysis-results');
@@ -3754,7 +3754,7 @@ function initSettingsInputs() {
   document.getElementById('goal-fat').value = s.fatGoal || 70;
   document.getElementById('settings-gemini-key').value = s.geminiApiKey || '';
   const modelSel = document.getElementById('settings-gemini-model');
-  if (modelSel) modelSel.value = s.geminiModel || 'gemini-2.5-flash';
+  if (modelSel) modelSel.value = s.geminiModel || 'gemini-3.8-flash';
 
   if (s.tdeeProfile) {
     document.getElementById('tdee-sex').value = s.tdeeProfile.sex || 'M';
@@ -3867,7 +3867,7 @@ function saveMacroGoals() {
 
 function saveGeminiApiKey() {
   const key = document.getElementById('settings-gemini-key').value.trim();
-  const model = document.getElementById('settings-gemini-model')?.value || 'gemini-2.5-flash';
+  const model = document.getElementById('settings-gemini-model')?.value || 'gemini-3.8-flash';
   appData.settings.geminiApiKey = key;
   appData.settings.geminiModel = model;
   saveAppData();
