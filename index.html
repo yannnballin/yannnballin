@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#090b10" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="TITAN Gym" />
+  <title>TITAN Gym & AI Nutrition</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Librería ligera para escaneo de códigos de barras con cámara -->
+  <script src="https://unpkg.com/html5-qrcode" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Notificaciones Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Header Superior -->
+    <header class="top-header">
+      <div class="brand-group">
+        <div class="brand-logo">T</div>
+        <div class="brand-title">
+          <h1>TITAN <span class="badge badge-accent">PRO</span></h1>
+          <div class="brand-subtitle" id="header-date-label">Cargando fecha...</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm" onclick="openPlateCalcModal()" title="Calculadora de Discos">
+          💿 Discos
+        </button>
+        <button id="btn-install-pwa" class="btn btn-primary btn-sm" style="display:none;" onclick="installPWA()">
+          📲 Instalar
+        </button>
+      </div>
+    </header>
+
+    <!-- ====================================================================
+         1. VISTA: INICIO / DASHBOARD DIARIO
+         ==================================================================== -->
+    <section id="view-home" class="view-section active">
+      <!-- Banner dinámico si hay un entrenamiento en curso -->
+      <div id="home-live-workout-banner" class="live-workout-banner" style="display:none;">
+        <div>
+          <div style="font-size:11px; color:#34d399; font-weight:800; text-transform:uppercase;">⚡ Entrenamiento en curso</div>
+          <div id="home-live-workout-name" style="font-weight:800; font-size:15px;">Rutina activa</div>
+          <div id="home-live-workout-timer" style="font-size:12px; color:var(--text-muted);">00:00</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="switchTab('workout')">Continuar ➔</button>
+      </div>
+
+      <!-- Tarjeta Principal de Calorías y Macros de Hoy -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔥 Nutrición de Hoy</div>
+          <button class="btn btn-ghost btn-sm" onclick="switchTab('nutrition')">Ver Diario ➔</button>
+        </div>
+        <div class="kcal-hero">
+          <div class="kcal-ring-wrap">
+            <svg width="112" height="112" viewBox="0 0 112 112">
+              <circle cx="56" cy="56" r="46" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="10" />
+              <circle id="home-kcal-ring" cx="56" cy="56" r="46" fill="none" stroke="#10b981" stroke-width="10"
+                stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"
+                transform="rotate(-90 56 56)" style="transition: stroke-dashoffset 0.5s ease;" />
+            </svg>
+            <div class="kcal-ring-center">
+              <span class="big-num" id="home-kcal-consumed">0</span>
+              <span class="small-lbl">de <span id="home-kcal-goal">2400</span> kcal</span>
+            </div>
+          </div>
+
+          <div class="macros-bars">
+            <div class="macro-row">
+              <div class="macro-row-head">
+                <span style="color:#34d399;">🥩 Proteína</span>
+                <span id="home-macro-p-txt">0 / 160g</span>
+              </div>
+              <div class="progress-track">
+                <div id="home-macro-p-bar" class="progress-fill" style="width:0%; background:#10b981;"></div>
+              </div>
+            </div>
+            <div class="macro-row">
+              <div class="macro-row-head">
+                <span style="color:#60a5fa;">🍚 Carbos</span>
+                <span id="home-macro-c-txt">0 / 260g</span>
+              </div>
+              <div class="progress-track">
+                <div id="home-macro-c-bar" class="progress-fill" style="width:0%; background:#3b82f6;"></div>
+              </div>
+            </div>
+            <div class="macro-row">
+              <div class="macro-row-head">
+                <span style="color:#fbbf24;">🥑 Grasas</span>
+                <span id="home-macro-f-txt">0 / 70g</span>
+              </div>
+              <div class="progress-track">
+                <div id="home-macro-f-bar" class="progress-fill" style="width:0%; background:#f59e0b;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones Rápidos de Escaneo y Registro -->
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+          <button class="btn btn-purple btn-sm" onclick="openQuickNutritionMode('ai')">
+            📸 Foto IA
+          </button>
+          <button class="btn btn-blue btn-sm" onclick="openQuickNutritionMode('barcode')">
+            🏷️ Escáner
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="openQuickNutritionMode('search')">
+            ➕ Alimento
+          </button>
+        </div>
+      </div>
+
+      <!-- Estadísticas Rápidas -->
+      <div class="stats-grid">
+        <div class="stat-box" onclick="switchTab('workout')" style="cursor:pointer;">
+          <div class="stat-label">🏋️ Entrenos Totales</div>
+          <div class="stat-value" id="home-stat-workouts">0</div>
+          <div class="stat-sub" id="home-stat-week">Esta semana: 0</div>
+        </div>
+        <div class="stat-box" onclick="switchTab('progress')" style="cursor:pointer;">
+          <div class="stat-label">⚖️ Peso Corporal</div>
+          <div class="stat-value" id="home-stat-weight">-- kg</div>
+          <div class="stat-sub" id="home-stat-prs">🏆 0 PRs registrados</div>
+        </div>
+      </div>
+
+      <!-- Hidratación Diaria -->
+      <div class="card">
+        <div class="card-header" style="margin-bottom:6px;">
+          <div class="card-title">💧 Hidratación Diaria</div>
+          <span class="badge badge-blue" id="home-water-label">0 / 2500 ml</span>
+        </div>
+        <div style="font-size:12px; color:var(--text-muted);">Toca cada vaso (250 ml) para registrar tu agua de hoy:</div>
+        <div id="home-water-cups" class="water-glasses"></div>
+      </div>
+
+      <!-- Inicio Rápido de Rutina -->
+      <div class="section-heading">
+        <span>⚡ Entrenar Ahora</span>
+        <button class="btn btn-ghost btn-sm" onclick="switchTab('workout')">Ver todas</button>
+      </div>
+      <div id="home-routines-list"></div>
+
+      <!-- Últimos Récords Personales (PRs) -->
+      <div class="card" style="margin-top:14px;">
+        <div class="card-header">
+          <div class="card-title">🏆 Mis Récords Personales (PRs)</div>
+        </div>
+        <div id="home-prs-list"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         2. VISTA: ENTRENAR (RUTINAS, ENTRENO EN VIVO, EJERCICIOS, HISTORIAL)
+         ==================================================================== -->
+    <section id="view-workout" class="view-section">
+      <!-- PANEL DE ENTRENAMIENTO EN VIVO (Se muestra cuando hay sesión activa) -->
+      <div id="live-workout-container" style="display:none;">
+        <div class="card" style="border-color: var(--accent); background: linear-gradient(180deg, rgba(16,185,129,0.12), var(--bg-card));">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div>
+              <span class="badge badge-accent">EN VIVO</span>
+              <input id="live-workout-title-input" type="text" class="form-control"
+                style="margin-top:6px; font-weight:800; font-size:16px; background:transparent; border:none; padding:2px 0;"
+                 value="Entrenamiento" />
+            </div>
+            <div style="text-align:right;">
+              <div id="live-workout-clock" style="font-size:22px; font-weight:900; color:var(--accent); font-variant-numeric:tabular-nums;">00:00</div>
+              <div style="font-size:11px; color:var(--text-muted);">Duración</div>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding-top:8px; border-top:1px solid var(--border); text-align:center;">
+            <div>
+              <div style="font-size:11px; color:var(--text-muted);">Volumen Total</div>
+              <div id="live-workout-volume" style="font-weight:800; font-size:15px;">0 kg</div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--text-muted);">Series Listas</div>
+              <div id="live-workout-sets" style="font-weight:800; font-size:15px;">0</div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--text-muted);">Nuevos PRs</div>
+              <div id="live-workout-prs" style="font-weight:800; font-size:15px; color:var(--gold);">0 🏆</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de Ejercicios de la Sesión en Vivo -->
+        <div id="live-exercises-list"></div>
+
+        <!-- Acciones del Entrenamiento en Vivo -->
+        <div style="display:flex; flex-direction:column; gap:10px; margin-top:12px;">
+          <button class="btn btn-secondary btn-block" onclick="openAddExerciseToWorkoutModal()">
+            ➕ Agregar Ejercicio a la Sesión
+          </button>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <button class="btn btn-danger btn-block" onclick="cancelLiveWorkout()">
+              🗑️ Cancelar
+            </button>
+            <button class="btn btn-primary btn-block" onclick="finishLiveWorkout()">
+              ✅ Terminar y Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL DE GESTIÓN DE RUTINAS Y BIBLIOTECA (Se muestra cuando NO hay entreno activo) -->
+      <div id="workout-hub-container">
+        <div class="pills-scroll">
+          <button class="pill-btn active" id="wtab-routines" onclick="switchWorkoutSubtab('routines')">📋 Mis Rutinas</button>
+          <button class="pill-btn" id="wtab-exercises" onclick="switchWorkoutSubtab('exercises')">💪 Ejercicios</button>
+          <button class="pill-btn" id="wtab-history" onclick="switchWorkoutSubtab('history')">🕒 Historial</button>
+        </div>
+
+        <!-- Sub-vista: Mis Rutinas -->
+        <div id="workout-sub-routines">
+          <button class="btn btn-primary btn-block" style="margin-bottom:14px; padding:13px;" onclick="startLiveWorkout(null)">
+            ⚡ Iniciar Entrenamiento Libre (En Blanco)
+          </button>
+
+          <div class="section-heading">
+            <span>Rutinas Guardadas</span>
+            <button class="btn btn-secondary btn-sm" onclick="openRoutineModal()">➕ Crear Rutina</button>
+          </div>
+          <div id="routines-full-list"></div>
+        </div>
+
+        <!-- Sub-vista: Biblioteca de Ejercicios -->
+        <div id="workout-sub-exercises" style="display:none;">
+          <div style="display:flex; gap:8px; margin-bottom:10px;">
+            <input type="text" id="exercise-search-input" class="form-control" placeholder="🔍 Buscar ejercicio o equipo..." oninput="renderExerciseLibrary()" />
+            <button class="btn btn-primary btn-sm" style="white-space:nowrap;" onclick="openNewExerciseModal()">➕ Nuevo</button>
+          </div>
+          <div class="pills-scroll" id="muscle-filter-pills"></div>
+          <div id="exercise-library-list"></div>
+        </div>
+
+        <!-- Sub-vista: Historial de Entrenamientos -->
+        <div id="workout-sub-history" style="display:none;">
+          <div id="workout-history-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         3. VISTA: NUTRICIÓN, IA POR FOTO Y ESCÁNER DE CÓDIGO DE BARRAS
+         ==================================================================== -->
+    <section id="view-nutrition" class="view-section">
+      <!-- Barra de Fecha -->
+      <div class="card" style="padding:12px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+          <button class="btn btn-secondary btn-sm" onclick="changeNutritionDate(-1)">◀ Ayer</button>
+          <input type="date" id="nutrition-date-picker" class="form-control" style="text-align:center; font-weight:700; max-width:170px;" onchange="onNutritionDateChange(this.value)" />
+          <button class="btn btn-secondary btn-sm" onclick="changeNutritionDate(1)">Mañana ▶</button>
+        </div>
+      </div>
+
+      <!-- Resumen Calórico del Día Seleccionado -->
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div>
+            <div style="font-size:12px; color:var(--text-muted);">Calorías Consumidas</div>
+            <div style="font-size:24px; font-weight:900;">
+              <span id="nut-kcal-in">0</span>
+              <span style="font-size:14px; color:var(--text-muted); font-weight:600;">/ <span id="nut-kcal-target">2400</span> kcal</span>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px; color:var(--text-muted);">Restantes</div>
+            <div id="nut-kcal-left" style="font-size:20px; font-weight:800; color:var(--accent);">2400 kcal</div>
+          </div>
+        </div>
+
+        <div class="form-row" style="grid-template-columns:repeat(3,1fr); text-align:center; gap:8px;">
+          <div style="background:var(--bg-input); padding:8px; border-radius:10px;">
+            <div style="font-size:11px; color:#34d399; font-weight:700;">Proteína</div>
+            <div id="nut-p-val" style="font-weight:800; font-size:14px;">0 / 160g</div>
+          </div>
+          <div style="background:var(--bg-input); padding:8px; border-radius:10px;">
+            <div style="font-size:11px; color:#60a5fa; font-weight:700;">Carbos</div>
+            <div id="nut-c-val" style="font-weight:800; font-size:14px;">0 / 260g</div>
+          </div>
+          <div style="background:var(--bg-input); padding:8px; border-radius:10px;">
+            <div style="font-size:11px; color:#fbbf24; font-weight:700;">Grasas</div>
+            <div id="nut-f-val" style="font-weight:800; font-size:14px;">0 / 70g</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pestañas de Herramientas de Nutrición -->
+      <div class="pills-scroll">
+        <button class="pill-btn active" id="ntab-diary" onclick="switchNutritionSubtab('diary')">🍽️ Diario del Día</button>
+        <button class="pill-btn" id="ntab-ai" onclick="switchNutritionSubtab('ai')">📸 Foto con IA</button>
+        <button class="pill-btn" id="ntab-barcode" onclick="switchNutritionSubtab('barcode')">🏷️ Escáner Código</button>
+        <button class="pill-btn" id="ntab-search" onclick="switchNutritionSubtab('search')">🔍 Base de Alimentos</button>
+      </div>
+
+      <!-- SUB-VISTA A: DIARIO DE COMIDAS -->
+      <div id="nut-sub-diary">
+        <div id="meals-diary-container"></div>
+      </div>
+
+      <!-- SUB-VISTA B: FOTO CON IA (CÁLCULO DE CALORÍAS POR FOTO) -->
+      <div id="nut-sub-ai" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📸 Analizador de Platos por Foto (IA)</div>
+            <span class="badge badge-accent">Gemini Vision</span>
+          </div>
+          <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:12px;">
+            Toma una foto de tu plato con la cámara o sube una imagen. La IA identificará cada alimento, estimará los gramos y calculará las calorías y macronutrientes automáticamente.
+          </p>
+
+          <!-- Selector de Comida Destino -->
+          <div class="form-group">
+            <label class="form-label">¿En qué comida deseas registrarlo?</label>
+            <select id="ai-meal-slot" class="form-control">
+              <option value="Desayuno">🌅 Desayuno</option>
+              <option value="Almuerzo" selected>☀️ Almuerzo</option>
+              <option value="Cena">🌙 Cena</option>
+              <option value="Snacks">🍎 Snacks / Post-Entreno</option>
+            </select>
+          </div>
+
+          <!-- Botón de Cámara / Galería -->
+          <input type="file" id="ai-photo-input" accept="image/*" capture="environment" style="display:none;" onchange="handleFoodPhotoSelected(event)" />
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
+            <button class="btn btn-purple btn-block" onclick="document.getElementById('ai-photo-input').setAttribute('capture','environment'); document.getElementById('ai-photo-input').click();">
+              📷 Tomar Foto
+            </button>
+            <button class="btn btn-secondary btn-block" onclick="document.getElementById('ai-photo-input').removeAttribute('capture'); document.getElementById('ai-photo-input').click();">
+              🖼️ Subir de Galería
+            </button>
+          </div>
+
+          <img id="ai-photo-preview" class="ai-photo-preview" alt="Vista previa del plato" />
+
+          <div class="form-group">
+            <label class="form-label">Detalle opcional (ayuda a mayor precisión)</label>
+            <input type="text" id="ai-photo-hint" class="form-control" placeholder="Ej: Pechuga a la plancha con arroz y 2 huevos..." />
+          </div>
+
+          <button id="btn-analyze-photo" class="btn btn-primary btn-block" onclick="analyzeFoodPhotoWithAI()">
+            ✨ Calcular Calorías de la Foto
+          </button>
+
+          <div id="ai-key-notice" style="margin-top:10px; font-size:11.5px; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
+            <span id="ai-key-status-text">Estado de IA Vision</span>
+            <button class="btn btn-ghost btn-sm" onclick="switchTab('settings')">⚙️ Configurar API Key</button>
+          </div>
+        </div>
+
+        <!-- Resultado Desglosado del Análisis por Foto -->
+        <div id="ai-analysis-results" class="card" style="display:none; border-color:var(--accent);">
+          <div class="card-header">
+            <div class="card-title">🍽️ Alimentos Detectados en el Plato</div>
+            <span class="badge badge-accent" id="ai-total-kcal-badge">0 kcal</span>
+          </div>
+          <div id="ai-detected-items-list"></div>
+
+          <div class="form-group" style="margin-top:12px;">
+            <label class="form-label">Ajustar tamaño de porción total: <strong id="ai-portion-scale-lbl">100% (1.0x)</strong></label>
+            <input type="range" id="ai-portion-slider" min="0.5" max="2.0" step="0.1" value="1.0" style="width:100%;" oninput="updateAIPortionScale(this.value)" />
+          </div>
+
+          <button class="btn btn-primary btn-block" onclick="saveAIDetectedMealToDiary()">
+            ✅ Agregar Plato Completo al Diario
+          </button>
+        </div>
+      </div>
+
+      <!-- SUB-VISTA C: ESCÁNER DE CÓDIGO DE BARRAS -->
+      <div id="nut-sub-barcode" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🏷️ Escáner de Código de Barras</div>
+            <span class="badge badge-blue">OpenFoodFacts</span>
+          </div>
+          <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:10px;">
+            Apunta con la cámara al código de barras de cualquier producto (avena, yogurt, atún, proteína, galletas, bebidas) o escríbelo manualmente.
+          </p>
+
+          <div id="barcode-reader-box" class="scanner-box">
+            <div style="text-align:center; padding:16px; color:var(--text-muted);">
+              <div style="font-size:32px; margin-bottom:6px;">📷</div>
+              <div>Presiona "Encender Cámara" para escanear</div>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
+            <button id="btn-start-scanner" class="btn btn-blue btn-block" onclick="startBarcodeScanner()">
+              📷 Encender Cámara
+            </button>
+            <button id="btn-stop-scanner" class="btn btn-secondary btn-block" onclick="stopBarcodeScanner()" style="display:none;">
+              ⏹️ Detener Cámara
+            </button>
+          </div>
+
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="manual-barcode-input" class="form-control" placeholder="O escribe el código ej: 7501045403014" />
+            <button class="btn btn-primary" onclick="lookupBarcodeProduct(document.getElementById('manual-barcode-input').value)">
+              Buscar
+            </button>
+          </div>
+        </div>
+
+        <!-- Resultado del Producto Escaneado -->
+        <div id="barcode-product-card" class="card" style="display:none; border-color:var(--primary-blue);"></div>
+      </div>
+
+      <!-- SUB-VISTA D: BASE DE DATOS DE ALIMENTOS + BUSCADOR ONLINE -->
+      <div id="nut-sub-search" style="display:none;">
+        <div class="card">
+          <div style="display:flex; gap:8px; margin-bottom:10px;">
+            <input type="text" id="food-db-search" class="form-control" placeholder="🔍 Buscar alimento (pollo, arroz, huevo, atún...)" oninput="renderFoodDatabaseList()" />
+            <button class="btn btn-blue btn-sm" onclick="searchOpenFoodFactsByText()" title="Buscar en base mundial OpenFoodFacts">
+              🌐 Online
+            </button>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div style="font-size:12px; color:var(--text-muted);">Selecciona un alimento o crea uno propio:</div>
+            <button class="btn btn-secondary btn-sm" onclick="openCustomFoodModal()">➕ Crear Alimento</button>
+          </div>
+
+          <div id="food-database-results"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         4. VISTA: PROGRESO, GRÁFICOS Y MEDIDAS CORPORALES
+         ==================================================================== -->
+    <section id="view-progress" class="view-section">
+      <!-- Gráfico de Progreso de Fuerza por Ejercicio -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📈 Evolución de Fuerza y 1RM</div>
+        </div>
+        <div class="form-group">
+          <select id="progress-exercise-select" class="form-control" onchange="renderStrengthChart()"></select>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="strength-chart-canvas" width="460" height="190"></canvas>
+        </div>
+        <div id="strength-chart-summary" style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-top:8px;"></div>
+      </div>
+
+      <!-- Gráfico de Peso Corporal -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚖️ Peso Corporal y Medidas</div>
+          <button class="btn btn-primary btn-sm" onclick="openBodyLogModal()">➕ Registrar Hoy</button>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="weight-chart-canvas" width="460" height="190"></canvas>
+        </div>
+      </div>
+
+      <!-- Historial de Medidas y Fotos de Progreso -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📏 Bitácora Corporal y Fotos</div>
+        </div>
+        <div id="body-logs-list"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         5. VISTA: AJUSTES, CALCULADORA TDEE, IA Y COPIA DE SEGURIDAD
+         ==================================================================== -->
+    <section id="view-settings" class="view-section">
+      <!-- Calculadora Automática de Calorías y Macros (TDEE) -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🎯 Metas de Calorías y Macros (Calculadora TDEE)</div>
+        </div>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+          Calcula automáticamente cuántas calorías y gramos de proteína, carbohidratos y grasas necesitas según tu cuerpo y objetivo, o edítalos manualmente.
+        </p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Sexo</label>
+            <select id="tdee-sex" class="form-control">
+              <option value="M">Hombre</option>
+              <option value="F">Mujer</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Edad (años)</label>
+            <input type="number" id="tdee-age" class="form-control" value="25" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Peso Actual (kg)</label>
+            <input type="number" id="tdee-weight" class="form-control" step="0.1" value="75" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estatura (cm)</label>
+            <input type="number" id="tdee-height" class="form-control" value="175" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nivel de Actividad Semanal</label>
+          <select id="tdee-activity" class="form-control">
+            <option value="1.2">Sedentario (Poco ejercicio)</option>
+            <option value="1.375">Ligero (Gym 1 a 3 días/semana)</option>
+            <option value="1.55" selected>Moderado (Gym 3 a 5 días/semana)</option>
+            <option value="1.725">Intenso (Gym 6 a 7 días/semana)</option>
+            <option value="1.9">Atleta / Doble sesión o trabajo físico</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Objetivo Principal</label>
+          <select id="tdee-goal" class="form-control">
+            <option value="-450">🔥 Definición / Pérdida de Grasa (-450 kcal)</option>
+            <option value="-250">⚡ Recomposición Corporal (-250 kcal)</option>
+            <option value="0">⚖️ Mantenimiento (0 kcal)</option>
+            <option value="300" selected>💪 Volumen Muscular Limpio (+300 kcal)</option>
+            <option value="500">🦍 Volumen Agresivo (+500 kcal)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-secondary btn-block" style="margin-bottom:14px;" onclick="calculateAndApplyTDEE()">
+          🧮 Calcular Mis Calorías y Macros Ideales
+        </button>
+
+        <div style="border-top:1px solid var(--border); padding-top:12px;">
+          <div class="form-label" style="margin-bottom:8px;">Metas Diarias Activas (puedes ajustarlas a tu gusto):</div>
+          <div class="form-row-4">
+            <div>
+              <label class="form-label">Kcal</label>
+              <input type="number" id="goal-kcal" class="form-control" value="2400" />
+            </div>
+            <div>
+              <label class="form-label">Prot (g)</label>
+              <input type="number" id="goal-protein" class="form-control" value="160" />
+            </div>
+            <div>
+              <label class="form-label">Carb (g)</label>
+              <input type="number" id="goal-carbs" class="form-control" value="260" />
+            </div>
+            <div>
+              <label class="form-label">Grasa (g)</label>
+              <input type="number" id="goal-fat" class="form-control" value="70" />
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" style="margin-top:10px;" onclick="saveMacroGoals()">
+            💾 Guardar Metas Diarias
+          </button>
+        </div>
+      </div>
+
+      <!-- Configuración de IA para Fotos de Comida -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🤖 IA para Fotos de Comida (Google Gemini)</div>
+          <span class="badge badge-accent">Gratis</span>
+        </div>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">
+          Para que la app analice fotos reales de tus platos con Inteligencia Artificial directamente desde tu celular y sin pagar suscripciones, pega aquí tu API Key gratuita de <strong>Google AI Studio</strong> (se guarda únicamente en la memoria de tu teléfono).
+        </p>
+        <div class="form-group">
+          <label class="form-label">Gemini API Key</label>
+          <input type="password" id="settings-gemini-key" class="form-control" placeholder="AIzaSy..." />
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-primary" style="flex:1;" onclick="saveGeminiApiKey()">Guardar API Key</button>
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="btn btn-secondary">
+            🔑 Obtener Gratis
+          </a>
+        </div>
+      </div>
+
+      <!-- Copia de Seguridad (Exportar / Importar JSON) -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">💾 Mis Datos y Copia de Seguridad</div>
+        </div>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+          Todos tus entrenamientos, rutinas, récords, fotos y comidas se guardan en tu dispositivo. Puedes descargar una copia de seguridad en cualquier momento.
+        </p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+          <button class="btn btn-blue btn-block" onclick="exportBackupJSON()">
+            ⬇️ Exportar Backup
+          </button>
+          <button class="btn btn-secondary btn-block" onclick="document.getElementById('import-backup-file').click()">
+            ⬆️ Importar Backup
+          </button>
+          <input type="file" id="import-backup-file" accept=".json" style="display:none;" onchange="importBackupJSON(event)" />
+        </div>
+        <button class="btn btn-danger btn-block btn-sm" onclick="resetAllAppData()">
+          ⚠️ Borrar todos los datos y restaurar de fábrica
+        </button>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         BARRA FLOTANTE DE TEMPORIZADOR DE DESCANSO
+         ==================================================================== -->
+    <div id="rest-timer-bar" class="rest-timer-bar">
+      <div>
+        <div style="font-size:10.5px; color:var(--text-muted); text-transform:uppercase; font-weight:700;">⏱️ Descanso entre series</div>
+        <div id="rest-timer-display" class="rest-countdown">01:30</div>
+      </div>
+      <div style="display:flex; gap:6px;">
+        <button class="btn btn-secondary btn-sm" onclick="adjustRestTimer(-15)">-15s</button>
+        <button class="btn btn-secondary btn-sm" onclick="adjustRestTimer(30)">+30s</button>
+        <button class="btn btn-primary btn-sm" onclick="stopRestTimer()">Saltar ✕</button>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         BARRA DE NAVEGACIÓN INFERIOR (5 PESTAÑAS)
+         ==================================================================== -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
+        <span>Inicio</span>
+      </button>
+      <button class="nav-item" id="nav-workout" onclick="switchTab('workout')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6.5 6.5L17.5 17.5M3 10l7-7M14 21l7-7M2 6l4-4M18 22l4-4"/></svg>
+        <span>Entrenar</span>
+      </button>
+      <button class="nav-item" id="nav-nutrition" onclick="switchTab('nutrition')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2c4 0 8 3.5 8 9 0 6-5 11-8 11S4 17 4 11c0-5.5 4-9 8-9zm0 0v5"/></svg>
+        <span>Nutrición IA</span>
+      </button>
+      <button class="nav-item" id="nav-progress" onclick="switchTab('progress')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg>
+        <span>Progreso</span>
+      </button>
+      <button class="nav-item" id="nav-settings" onclick="switchTab('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Ajustes</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ====================================================================
+       MODALES INTERACTIVOS
+       ==================================================================== -->
+  <div id="generic-modal-backdrop" class="modal-backdrop" onclick="if(event.target===this) closeModal()">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div id="generic-modal-title" class="modal-title">Modal</div>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button>
+      </div>
+      <div id="generic-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
